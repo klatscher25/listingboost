@@ -47,7 +47,7 @@ function checkTodoSync() {
     )
   }
 
-  // 4. Check if timestamp is recent (within 6 hours)
+  // 4. Check if timestamp is recent (within auto-commit window)
   const timestampMatch = todoContent.match(
     /Last Updated.*?(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})/
   )
@@ -56,11 +56,14 @@ function checkTodoSync() {
     const now = new Date()
     const hoursDiff = (now - lastUpdate) / (1000 * 60 * 60)
 
-    if (hoursDiff > 6) {
+    // Auto-commit workflow runs every 6 hours - allow 8 hour buffer
+    if (hoursDiff > 8) {
       issues.push(`⚠️ TODO.md last updated ${Math.round(hoursDiff)} hours ago`)
+      issues.push(`💡 Auto-commit workflow should update this every 6 hours`)
     }
   } else {
     issues.push('❌ No valid timestamp found in TODO.md')
+    issues.push('💡 Use format: Last Updated: YYYY-MM-DD HH:MM:SS')
   }
 
   // 5. Check for project file consistency

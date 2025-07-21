@@ -108,7 +108,14 @@ export async function POST(request: NextRequest) {
       }
 
       // Race between analysis and timeout
-      analysisResult = await Promise.race([analysisPromise, timeoutPromise])
+      const raceResult = await Promise.race([analysisPromise, timeoutPromise])
+
+      // Type guard for timeout
+      if (raceResult === 'timeout') {
+        throw new Error('Analysis timed out after 90 seconds')
+      }
+
+      analysisResult = raceResult
 
       return NextResponse.json({
         success: true,
@@ -120,7 +127,8 @@ export async function POST(request: NextRequest) {
           ai_enabled: enable_ai,
           ai_analysis_type: enable_ai ? ai_analysis_type : undefined,
           data_source: 'enhanced_analysis', // Apify + AI
-          processing_time: analysisResult.processingInfo.totalTime,
+          processing_time:
+            (analysisResult as any)?.processingInfo?.totalTime || 0,
         },
       })
     } catch (scrapeError) {

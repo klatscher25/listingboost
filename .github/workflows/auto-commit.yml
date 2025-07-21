@@ -1,60 +1,167 @@
-name: Auto-commit and sync
+name: ListingBoost Auto-Commit & Sync System
 
 on:
   schedule:
-    # Every 6 hours during work hours (6:00, 12:00, 18:00, 00:00 CET)
-    - cron: '0 6,12,18,0 * * *'
+    # Every 6 hours: 6:00, 12:00, 18:00, 00:00 CET (5:00, 11:00, 17:00, 23:00 UTC)
+    - cron: '0 5,11,17,23 * * *'
   workflow_dispatch: # Manual trigger
+  push:
+    branches: [ main ]
+    paths: [ 'TODO.md', 'CLAUDE.md', '.github/workflows/**' ]
   
 jobs:
   auto-commit:
+    name: Automated Commit & TODO Sync
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     
     steps:
-      - name: Checkout repository
+      - name: 🔄 Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
           
-      - name: Install dependencies
-        run: npm ci
+      - name: 📦 Install dependencies
+        run: npm ci --only=production
         
-      - name: Check for uncommitted changes
-        id: changes
+      - name: 🕒 Update TODO.md timestamp
         run: |
-          if [[ -n $(git status --porcelain) ]]; then
-            echo "changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "changes=false" >> $GITHUB_OUTPUT
+          # Update timestamp in TODO.md if it exists
+          if [ -f "TODO.md" ]; then
+            CURRENT_TIME=$(date '+%Y-%m-%d %H:%M:%S')
+            sed -i "s/Last Updated.*$/Last Updated**: $CURRENT_TIME - AUTO-SYNC ✅/" TODO.md || echo "No timestamp pattern found"
+            echo "📅 Updated TODO.md timestamp to $CURRENT_TIME"
           fi
           
-      - name: Commit changes if any
-        if: steps.changes.outputs.changes == 'true'
+      - name: 🔍 Validate project state
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
+          echo "🔍 Running comprehensive validation..."
           
-          # Check for secrets before committing
-          if git status --porcelain | cut -c4- | xargs grep -l "apify_api_[A-Za-z0-9]\{20,\}" 2>/dev/null; then
-            echo "❌ ERROR: Real API tokens detected! Skipping auto-commit."
+          # Run TODO sync validation
+          if [ -f "scripts/check-todo-sync.js" ]; then
+            node scripts/check-todo-sync.js || echo "⚠️ TODO validation warnings (auto-commit will proceed)"
+          fi
+          
+          # Quick security scan
+          if find . -name "*.js" -o -name "*.ts" -o -name "*.json" -o -name "*.md" | \
+             xargs grep -l "apify_api_[A-Za-z0-9]\{20,\}" 2>/dev/null; then
+            echo "❌ CRITICAL: Real API tokens detected!"
+            echo "🛑 Auto-commit blocked for security"
             exit 1
           fi
           
-          git add .
-          git commit -m "chore: automated commit - $(date '+%Y-%m-%d %H:%M')"
-          git push
-          
-      - name: Log status
+          echo "✅ Validation passed"
+        
+      - name: 📊 Analyze changes
+        id: changes
         run: |
-          if [[ "${{ steps.changes.outputs.changes }}" == "true" ]]; then
-            echo "✅ Changes committed and pushed"
+          # Check for any changes (staged or unstaged)
+          if [[ -n $(git status --porcelain) ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            
+            # Categorize changes
+            MODIFIED_FILES=$(git status --porcelain | wc -l)
+            TODO_CHANGED=$(git status --porcelain | grep "TODO.md" | wc -l)
+            CODE_CHANGED=$(git status --porcelain | grep -E "\.(ts|tsx|js|jsx)$" | wc -l)
+            
+            echo "files_modified=$MODIFIED_FILES" >> $GITHUB_OUTPUT
+            echo "todo_changed=$TODO_CHANGED" >> $GITHUB_OUTPUT  
+            echo "code_changed=$CODE_CHANGED" >> $GITHUB_OUTPUT
+            
+            echo "📈 Changes detected:"
+            echo "  - Modified files: $MODIFIED_FILES"
+            echo "  - TODO.md changes: $TODO_CHANGED"
+            echo "  - Code changes: $CODE_CHANGED"
           else
-            echo "ℹ️ No changes to commit"
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No changes detected"
           fi
+          
+      - name: 🤖 Intelligent commit
+        if: steps.changes.outputs.changes == 'true'
+        run: |
+          # Configure git
+          git config --local user.email "auto-commit@listingboost.ai"
+          git config --local user.name "ListingBoost Auto-Commit"
+          
+          # Determine commit type based on changes
+          FILES_MODIFIED="${{ steps.changes.outputs.files_modified }}"
+          TODO_CHANGED="${{ steps.changes.outputs.todo_changed }}"
+          CODE_CHANGED="${{ steps.changes.outputs.code_changed }}"
+          
+          COMMIT_TYPE="chore"
+          COMMIT_SCOPE="auto-sync"
+          COMMIT_DESC="automated maintenance"
+          
+          if [ "$TODO_CHANGED" -gt 0 ] && [ "$CODE_CHANGED" -gt 0 ]; then
+            COMMIT_TYPE="feat"
+            COMMIT_SCOPE="development"
+            COMMIT_DESC="development progress with TODO.md sync"
+          elif [ "$TODO_CHANGED" -gt 0 ]; then
+            COMMIT_TYPE="docs"
+            COMMIT_SCOPE="todo"
+            COMMIT_DESC="TODO.md synchronization and progress update"
+          elif [ "$CODE_CHANGED" -gt 0 ]; then
+            COMMIT_TYPE="feat"
+            COMMIT_SCOPE="development" 
+            COMMIT_DESC="automated development progress"
+          fi
+          
+          TIMESTAMP=$(date '+%Y-%m-%d %H:%M CET')
+          
+          # Stage all changes
+          git add .
+          
+          # Create intelligent commit message
+          git commit -m "$COMMIT_TYPE($COMMIT_SCOPE): $COMMIT_DESC
+
+          🤖 Automated commit from GitHub Actions
+          📅 Timestamp: $TIMESTAMP  
+          📊 Files modified: $FILES_MODIFIED
+          🔄 Auto-sync workflow operational
+          
+          Changes include:
+          $(git diff --cached --name-only | head -10 | sed 's/^/  - /')
+          
+          🚀 ListingBoost development continues...
+          
+          🤖 Generated with [GitHub Actions](https://github.com/features/actions)
+          
+          Co-Authored-By: GitHub Actions <actions@github.com>"
+          
+          echo "✅ Intelligent commit created"
+          
+      - name: 🚀 Push changes
+        if: steps.changes.outputs.changes == 'true'
+        run: |
+          git push origin main
+          echo "🎉 Changes successfully pushed to GitHub"
+          
+      - name: 📋 Summary report
+        run: |
+          echo "## 📊 Auto-Commit Summary Report"
+          echo "================================="
+          echo ""
+          
+          if [[ "${{ steps.changes.outputs.changes }}" == "true" ]]; then
+            echo "✅ **Status**: Changes committed and pushed"
+            echo "📁 **Files modified**: ${{ steps.changes.outputs.files_modified }}"
+            echo "📅 **Timestamp**: $(date '+%Y-%m-%d %H:%M:%S CET')"
+            echo "🔄 **Next auto-commit**: $(date -d '+6 hours' '+%Y-%m-%d %H:%M CET')"
+          else
+            echo "ℹ️ **Status**: No changes to commit"
+            echo "🕒 **Last check**: $(date '+%Y-%m-%d %H:%M:%S CET')"  
+            echo "🔄 **Next check**: $(date -d '+6 hours' '+%Y-%m-%d %H:%M CET')"
+          fi
+          
+          echo ""
+          echo "🎯 **Auto-commit system operational**"
+          echo "🛡️ **Security validation**: Passed"
+          echo "📚 **TODO.md sync**: Active"

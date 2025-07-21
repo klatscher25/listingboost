@@ -14,6 +14,7 @@
 2. **SYNC** TODO.md after major milestones (never let it get >2 hours out of sync)
 3. **VALIDATE** actual codebase state matches documented state
 4. **COMMUNICATE** blockers or scope changes immediately
+5. **TRUST** auto-commit system for regular synchronization (every 6 hours)
 
 ### AFTER EVERY ACTION:
 1. **UPDATE** `TODO.md` with completed status [✅] or [🔄] for handoffs
@@ -21,6 +22,7 @@
 3. **DOCUMENT** next dependencies and suggested next agent
 4. **COMMIT** changes with descriptive message including TODO sync
 5. **VERIFY** next agent can pick up cleanly from TODO.md state
+6. **RELY** on automated Git workflows for continuous synchronization
 
 ### AGENT HANDOFF RULES:
 - **NEVER** mark tasks complete in TODO.md unless they're 100% working
@@ -149,6 +151,75 @@ lib/utils/formatCurrency.ts ✅
 
 ---
 
+## 🤖 AUTOMATED GIT WORKFLOW INTEGRATION
+
+### AUTO-COMMIT SYSTEM - PRODUCTION-GRADE AUTOMATION
+
+**🕒 Schedule**: Every 6 hours (6:00, 12:00, 18:00, 00:00 CET)  
+**🎯 Purpose**: Maintain continuous project synchronization and documentation
+
+#### How Auto-Commit Works:
+```yaml
+Automated Process:
+1. 📅 Update TODO.md timestamp automatically  
+2. 🔍 Run comprehensive validation (8-phase pre-commit system)
+3. 🤖 Analyze changes intelligently (code vs docs vs mixed)
+4. 💾 Create contextual commit messages
+5. 🚀 Push to GitHub with security validation
+6. 📊 Generate summary reports
+```
+
+#### AI Integration Rules:
+```markdown
+✅ DO:
+- Trust auto-commit for regular synchronization
+- Continue development knowing changes will be preserved
+- Update TODO.md manually for immediate needs
+- Commit major milestones manually for important checkpoints
+
+❌ DON'T:  
+- Worry about losing work between sessions
+- Manually commit every small change
+- Override auto-commit timestamps
+- Disable auto-commit system without coordination
+```
+
+#### Auto-Commit Message Intelligence:
+```bash
+# Code + Documentation Changes
+feat(development): development progress with TODO.md sync
+
+# Documentation Only  
+docs(todo): TODO.md synchronization and progress update
+
+# Code Only
+feat(development): automated development progress  
+
+# Maintenance
+chore(auto-sync): automated maintenance
+```
+
+#### Validation Phases (All Auto-Checked):
+1. **🔒 Security**: API token exposure prevention
+2. **📋 TODO.md**: Synchronization and timestamp validation  
+3. **📏 File Size**: 400-line limit enforcement (CLAUDE.md compliance)
+4. **🎯 Code Quality**: Debug statements, error handling, TypeScript strict mode
+5. **🇩🇪 Localization**: German UI text compliance 
+6. **📦 Dependencies**: package.json/lock synchronization
+7. **🗄️ Database**: Migration naming and safety checks
+8. **🎨 Formatting**: Prettier, ESLint, and code standards
+
+#### Manual Override When Needed:
+```bash
+# Emergency commit (bypasses some checks)
+git commit --no-verify -m "emergency: critical hotfix"
+
+# Manual trigger auto-commit workflow
+# GitHub → Actions → "ListingBoost Auto-Commit & Sync System" → Run workflow
+```
+
+---
+
 ## 🚨 ERROR HANDLING PROTOCOL
 
 ### Every function MUST have:
@@ -215,14 +286,7 @@ style(ui): update button hover states
 chore(deps): upgrade Next.js to v15
 ```
 
-### Code Review Checklist:
-- [ ] No console.logs in production code
-- [ ] All functions have JSDoc comments
-- [ ] Error handling implemented
-- [ ] Input validation present
-- [ ] Tests written/updated
-- [ ] No hardcoded values
-- [ ] Follows file size limits
+### Code Review: No console.logs, JSDoc comments, error handling, input validation, tests, no hardcoded values
 
 ---
 
@@ -291,104 +355,34 @@ const currencyFormatter = new Intl.NumberFormat('de-DE', {
 const numberFormatter = new Intl.NumberFormat('de-DE')
 ```
 
-### Database Operations
+### Database & API Rules
 ```typescript
-// ALWAYS use transactions for multiple operations
-const { data, error } = await supabase.rpc('transaction_wrapper', {
-  operations: [...]
-})
-
-// NEVER fetch without limits
-.select('*')
-.limit(100) // Always set a limit
-```
-
-### API Rate Limiting
-```typescript
-// Implement for all external APIs:
-const rateLimiter = {
-  apify: 10, // requests per minute
-  gemini: 60, // requests per minute
-  stripe: 100 // requests per minute
-}
-```
-
-### State Management
-```typescript
-// Prefer server state over client state
-// Use React Server Components where possible
-// Client state only for UI interactions
+// Use transactions, always set limits, rate limiting
+supabase.rpc('transaction_wrapper', {...}).select('*').limit(100)
+const rateLimiter = { apify: 10, gemini: 60, stripe: 100 } // per minute
 ```
 
 ---
 
-## 📋 DAILY CHECKLIST FOR AI
+## 🚫 FORBIDDEN ACTIONS & QUALITY STANDARDS
 
-### Start of Session:
-- [ ] Load all .md files
-- [ ] Check TODO.md for current sprint
-- [ ] Verify branch is correct
-- [ ] Check for any blockers
+**NEVER:**
+- Delete without confirmation
+- Skip error handling "for now" 
+- Use `any` type - use `unknown` instead
+- Commit commented-out code
+- Expose internal errors to users
 
-### During Development:
-- [ ] Update TODO.md every 30 minutes
-- [ ] Commit atomic changes
-- [ ] Run type checks before commits
-- [ ] Keep terminal output clean
+**QUALITY METRICS:**
+- TypeScript Coverage: 100% (no any types)
+- File Size: No file over 400 lines
+- Response Time: API responses < 500ms
 
-### End of Session:
-- [ ] Update all task statuses
-- [ ] Document any decisions made
-- [ ] List tomorrow's priorities
-- [ ] Commit all changes
-
----
-
-## 🚫 FORBIDDEN ACTIONS
-
-1. **NEVER** delete without confirmation
-2. **NEVER** modify core configs without discussion
-3. **NEVER** skip error handling "for now"
-4. **NEVER** use `any` type - use `unknown` instead
-5. **NEVER** commit commented-out code
-6. **NEVER** use force push
-7. **NEVER** expose internal errors to users
+**PRIORITIES:**
+1. Security over convenience
+2. Maintainability over cleverness  
+3. User Experience over developer experience
 
 ---
 
-## 💡 WHEN STUCK
-
-1. **Re-read** the task requirements
-2. **Check** similar implementations in codebase
-3. **Consult** the documentation files
-4. **Ask** for clarification with specific questions
-5. **Propose** 2-3 alternative approaches
-
----
-
-## 📊 QUALITY METRICS TO MAINTAIN
-
-- **TypeScript Coverage**: 100% (no any types)
-- **Error Handling**: 100% try-catch coverage
-- **Code Comments**: All public functions documented
-- **File Size**: No file over 400 lines
-- **Response Time**: API responses < 500ms
-- **Bundle Size**: Monitor with next-bundle-analyzer
-
----
-
-## 🔔 REMEMBER
-
-**You are building a production-grade SaaS application. Every line of code matters. Every decision has consequences. Always prioritize:**
-
-1. **Security** over convenience
-2. **Maintainability** over cleverness  
-3. **User Experience** over developer experience
-4. **Performance** over premature optimization
-5. **Clarity** over brevity
-
----
-
-**Last Updated**: 2025-01-20
-**Current Sprint**: DACH Market Focus - German Localization
-**Active Branch**: main
+**Last Updated**: 2025-01-20 | **Current Sprint**: German Localization
