@@ -116,9 +116,9 @@ export default function LoginPage() {
 
   return (
     <div>
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Anmelden</h2>
-        <p className="mt-2 text-sm text-gray-600">
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold bg-gradient-to-r from-slate-900 to-blue-800 bg-clip-text text-transparent text-center">Anmelden</h2>
+        <p className="mt-2 text-slate-600 text-center">
           Willkommen zurück! Bitte melden Sie sich in Ihrem Konto an.
         </p>
       </div>
@@ -147,8 +147,8 @@ export default function LoginPage() {
               required
               value={formData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                errors.email ? 'border-red-300' : 'border-gray-300'
+              className={`appearance-none block w-full px-4 py-3 border rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                errors.email ? 'border-red-300 bg-red-50' : 'border-slate-300 hover:border-slate-400'
               }`}
               placeholder="Geben Sie Ihre E-Mail-Adresse ein"
             />
@@ -175,8 +175,8 @@ export default function LoginPage() {
               required
               value={formData.password}
               onChange={(e) => handleInputChange('password', e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${
-                errors.password ? 'border-red-300' : 'border-gray-300'
+              className={`appearance-none block w-full px-4 py-3 border rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 ${
+                errors.password ? 'border-red-300 bg-red-50' : 'border-slate-300 hover:border-slate-400'
               }`}
               placeholder="Geben Sie Ihr Passwort ein"
             />
@@ -192,7 +192,7 @@ export default function LoginPage() {
           <div className="text-sm">
             <Link
               href="/auth/forgot-password"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-blue-600 hover:text-blue-700 transition-colors duration-200"
             >
               Passwort vergessen?
             </Link>
@@ -204,7 +204,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-semibold rounded-lg text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-[1.02] transition-all duration-200"
           >
             {isLoading ? 'Wird angemeldet...' : 'Anmelden'}
           </button>
@@ -228,7 +228,7 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleSignIn}
             disabled={isLoading}
-            className="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full inline-flex justify-center py-3 px-4 border border-slate-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 hover:border-slate-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:shadow-md"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path

@@ -11,8 +11,8 @@ function createDevelopmentConfig() {
       process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
     NEXT_PUBLIC_APP_NAME:
       process.env.NEXT_PUBLIC_APP_NAME || 'ListingBoost Pro',
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || '',
-    SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY || '',
+    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://exarikehlmtczpaarfed.supabase.co',
+    SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YXJpa2VobG10Y3pwYWFyZmVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMjI4MjAsImV4cCI6MjA2ODU5ODgyMH0.B9syY3MN1bQDM8EZD26pqEcF39xwVm8yPNCoMFrkzhY',
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
     NEXTAUTH_URL: process.env.NEXTAUTH_URL || 'http://localhost:3000',
     NEXTAUTH_SECRET:
@@ -88,7 +88,34 @@ function parseEnv() {
 
   // In production, validate strictly
   try {
-    return prodEnvSchema.parse(process.env)
+    // Create production config object with correct environment variable mapping
+    const prodConfig = {
+      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+      NEXT_PUBLIC_APP_NAME: process.env.NEXT_PUBLIC_APP_NAME,
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY, // Map from NEXT_PUBLIC_ version
+      SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+      NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+      NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
+      GOOGLE_GEMINI_API_KEY: process.env.GOOGLE_GEMINI_API_KEY || process.env.GEMINI_API_KEY,
+      GOOGLE_GEMINI_MODEL: process.env.GOOGLE_GEMINI_MODEL,
+      APIFY_API_TOKEN: process.env.APIFY_API_TOKEN,
+      APIFY_ACTOR_URL_SCRAPER: process.env.APIFY_ACTOR_URL_SCRAPER,
+      APIFY_ACTOR_REVIEW_SCRAPER: process.env.APIFY_ACTOR_REVIEW_SCRAPER,
+      APIFY_ACTOR_AVAILABILITY_SCRAPER: process.env.APIFY_ACTOR_AVAILABILITY_SCRAPER,
+      APIFY_ACTOR_LOCATION_SCRAPER: process.env.APIFY_ACTOR_LOCATION_SCRAPER,
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+      STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
+      STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
+      CLOUDINARY_CLOUD_NAME: process.env.CLOUDINARY_CLOUD_NAME,
+      CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
+      CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
+      BREVO_API_KEY: process.env.BREVO_API_KEY,
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+    }
+    
+    return prodEnvSchema.parse(prodConfig)
   } catch (error) {
     console.error('❌ Production environment validation failed:', error)
     throw new Error('Environment validation failed')

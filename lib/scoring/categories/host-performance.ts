@@ -64,14 +64,14 @@ export async function calculateHostPerformanceScore(
   }
   totalScore += responseTimeScore
 
-  // 1.4 Host Verification (20 Punkte) - Simplified implementation
-  const verificationScore = listing.host_is_verified ? 20 : 0
+  // 1.4 Host Verification (20 Punkte) - Using Superhost as verification proxy
+  const verificationScore = listing.host_is_superhost ? 20 : 0
   subcategories.hostVerification = {
     score: verificationScore,
     maxScore: 20,
-    reason: listing.host_is_verified
-      ? 'Host ist verifiziert'
-      : 'Host nicht verifiziert',
+    reason: listing.host_is_superhost
+      ? 'Host ist Superhost (verifiziert)'
+      : 'Kein Superhost-Status',
   }
   totalScore += verificationScore
 

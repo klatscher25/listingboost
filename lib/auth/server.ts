@@ -16,8 +16,8 @@ import type { Database } from '../../types/database'
  * Create a Supabase client for server-side rendering
  * This handles cookies and session management automatically
  */
-export function createServerSupabaseClient() {
-  const cookieStore = cookies()
+export async function createServerSupabaseClient() {
+  const cookieStore = await cookies()
 
   return createServerClient<Database>(
     config.NEXT_PUBLIC_SUPABASE_URL,
@@ -54,7 +54,7 @@ export function createServerSupabaseClient() {
  * Get the current user on the server side
  */
 export async function getServerUser() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const {
@@ -78,7 +78,7 @@ export async function getServerUser() {
  * Get the current session on the server side
  */
 export async function getServerSession() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const {
@@ -133,7 +133,7 @@ export async function requireAuthWithProfile(
     redirect(redirectTo)
   }
 
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
 
   try {
     const { data: profile, error } = await supabase
@@ -188,7 +188,7 @@ export async function requireNoAuth(redirectTo: string = '/dashboard') {
  * Get user with profile data from database
  */
 export async function getServerUserProfile() {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
   const user = await getServerUser()
 
   if (!user) {
@@ -229,7 +229,7 @@ export async function hasRole(
   organizationId: string,
   requiredRole: 'owner' | 'admin' | 'member'
 ): Promise<boolean> {
-  const supabase = createServerSupabaseClient()
+  const supabase = await createServerSupabaseClient()
   const user = await getServerUser()
 
   if (!user) {
