@@ -1,0 +1,179 @@
+{
+  "timestamp": "2025-07-21T11:51:28.619Z",
+  "config": {
+    "baseUrl": "http://localhost:3000",
+    "testUrl": "https://www.airbnb.de/rooms/52007734",
+    "timeout": 300000
+  },
+  "results": {
+    "health": {
+      "success": true,
+      "data": {
+        "success": true,
+        "data": {
+          "apifyHealthy": false,
+          "geminiHealthy": true,
+          "overallHealthy": false,
+          "details": {
+            "apify": {
+              "healthy": false,
+              "actors": [
+                {
+                  "actorId": "tri_angle/airbnb-rooms-urls-scraper",
+                  "available": false,
+                  "status": "not_found"
+                },
+                {
+                  "actorId": "tri_angle/airbnb-reviews-scraper",
+                  "available": false,
+                  "status": "not_found"
+                },
+                {
+                  "actorId": "rigelbytes/airbnb-availability-calendar",
+                  "available": false,
+                  "status": "not_found"
+                },
+                {
+                  "actorId": "tri_angle/airbnb-scraper",
+                  "available": false,
+                  "status": "not_found"
+                }
+              ],
+              "summary": {
+                "total": 4,
+                "available": 0,
+                "unavailable": 4
+              },
+              "timestamp": "2025-07-21T11:51:24.651Z"
+            },
+            "gemini": {
+              "healthy": true,
+              "rateLimitStatus": {
+                "requestsRemaining": 15,
+                "resetTime": 1753098743988,
+                "tokensUsed": 0,
+                "tokensRemaining": 50000
+              }
+            }
+          },
+          "services": {
+            "apify": {
+              "healthy": false,
+              "status": "degraded",
+              "details": {
+                "healthy": false,
+                "actors": [
+                  {
+                    "actorId": "tri_angle/airbnb-rooms-urls-scraper",
+                    "available": false,
+                    "status": "not_found"
+                  },
+                  {
+                    "actorId": "tri_angle/airbnb-reviews-scraper",
+                    "available": false,
+                    "status": "not_found"
+                  },
+                  {
+                    "actorId": "rigelbytes/airbnb-availability-calendar",
+                    "available": false,
+                    "status": "not_found"
+                  },
+                  {
+                    "actorId": "tri_angle/airbnb-scraper",
+                    "available": false,
+                    "status": "not_found"
+                  }
+                ],
+                "summary": {
+                  "total": 4,
+                  "available": 0,
+                  "unavailable": 4
+                },
+                "timestamp": "2025-07-21T11:51:24.651Z"
+              }
+            },
+            "gemini": {
+              "healthy": true,
+              "status": "operational",
+              "details": {
+                "healthy": true,
+                "rateLimitStatus": {
+                  "requestsRemaining": 15,
+                  "resetTime": 1753098743988,
+                  "tokensUsed": 0,
+                  "tokensRemaining": 50000
+                }
+              }
+            }
+          },
+          "overallStatus": "degraded",
+          "capabilities": {
+            "basicAnalysis": false,
+            "aiEnhancedAnalysis": false,
+            "recommendationEngine": true,
+            "sentimentAnalysis": true
+          }
+        },
+        "meta": {
+          "timestamp": "2025-07-21T11:51:24.651Z",
+          "version": "3.0.0",
+          "healthCheck": true
+        }
+      }
+    },
+    "status": {
+      "success": true,
+      "data": {
+        "success": true,
+        "data": {
+          "healthy": false,
+          "actors": [
+            {
+              "actorId": "tri_angle/airbnb-rooms-urls-scraper",
+              "available": false,
+              "status": "not_found"
+            },
+            {
+              "actorId": "tri_angle/airbnb-reviews-scraper",
+              "available": false,
+              "status": "not_found"
+            },
+            {
+              "actorId": "rigelbytes/airbnb-availability-calendar",
+              "available": false,
+              "status": "not_found"
+            },
+            {
+              "actorId": "tri_angle/airbnb-scraper",
+              "available": false,
+              "status": "not_found"
+            }
+          ],
+          "summary": {
+            "total": 4,
+            "available": 0,
+            "unavailable": 4
+          },
+          "timestamp": "2025-07-21T11:51:24.838Z"
+        },
+        "meta": {
+          "timestamp": "2025-07-21T11:51:24.838Z",
+          "version": "2.0.0"
+        }
+      }
+    },
+    "analysis": {
+      "success": false,
+      "error": {
+        "code": "SCRAPING_ERROR",
+        "message": "Fehler beim Analysieren des Listings",
+        "details": "Umfassende Analyse fehlgeschlagen: Scraping-Fehler: Apify API Fehler: We have bad news: there is no API endpoint at this URL. Did you specify it correctly?"
+      }
+    }
+  },
+  "summary": {
+    "passed": 2,
+    "total": 3,
+    "success": false
+  }
+}

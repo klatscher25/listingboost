@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+
+# Environment
+.env*
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Python virtual env
+.venv/
+
+# Generated files
+tsconfig.tsbuildinfo
+
+# Markdown files (project docs)
+*.md

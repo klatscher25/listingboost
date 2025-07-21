@@ -1,0 +1,23 @@
+#!/bin/sh
+# Husky pre-commit hook for ListingBoost
+
+# 1. Check for secrets in staged files before processing
+echo "🔍 Checking for secrets..."
+if git diff --cached --name-only | xargs grep -l "apify_api_[A-Za-z0-9]\{20,\}" 2>/dev/null; then
+    echo "❌ ERROR: Real API tokens detected in staged files!"
+    echo "Please replace with placeholders like 'YOUR_TOKEN_HERE'"
+    exit 1
+fi
+
+# 2. Validate TODO.md synchronization
+echo "🔍 Validating TODO.md synchronization..."
+node scripts/check-todo-sync.js
+if [ $? -ne 0 ]; then
+  echo "❌ TODO.md sync validation failed - commit blocked"
+  exit 1
+fi
+
+# 3. Run code formatting and linting
+npx lint-staged
+
+echo "✅ Pre-commit checks passed!"
