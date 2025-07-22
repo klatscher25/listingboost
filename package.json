@@ -17,7 +17,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false",
-    "prepare": "husky"
+    "prepare": "husky install 2>/dev/null || true"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.1.1",
