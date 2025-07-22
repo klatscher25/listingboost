@@ -9,6 +9,7 @@
 'use client'
 
 import { useState, useRef } from 'react'
+import Image from 'next/image'
 import { supabase } from '@/lib/supabase'
 
 interface AvatarUploadProps {
@@ -109,15 +110,17 @@ export default function AvatarUpload({
       <div className="flex items-center space-x-4">
         <div className="h-20 w-20 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
           {currentAvatarUrl ? (
-            <img
+            <Image
               src={currentAvatarUrl}
               alt="Profilbild"
+              width={80}
+              height={80}
               className="h-full w-full object-cover"
               onError={(e) => {
-                // Handle broken images
+                console.log('[AVATAR] Failed to load user avatar image')
+                // Handle broken images by hiding the image and showing fallback
                 const target = e.target as HTMLImageElement
-                target.src =
-                  'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik00MCA0MEMzNi42ODYzIDQwIDM0IDM3LjMxMzcgMzQgMzRDMzQgMzAuNjg2MyAzNi42ODYzIDI4IDQwIDI4QzQzLjMxMzcgMjggNDYgMzAuNjg2MyA0NiAzNEM0NiAzNy4zMTM3IDQzLjMxMzcgNDAgNDAgNDBaTTQwIDQyQzQ3LjE3OTcgNDIgNTMgNDcuODIwMyA1MyA1NVY1OEgzNFY1NUM0NyA0Ny44MjAzIDQ5LjgyMDMgNDIgNDAgNDJaIiBmaWxsPSIjOUM5Q0EzIi8+Cjwvc3ZnPgo='
+                target.style.display = 'none'
               }}
             />
           ) : (

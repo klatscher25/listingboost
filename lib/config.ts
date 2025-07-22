@@ -23,7 +23,11 @@ function createDevelopmentConfig() {
       process.env.GEMINI_API_KEY ||
       'dev_placeholder_gemini_key',
     GOOGLE_GEMINI_MODEL: process.env.GOOGLE_GEMINI_MODEL || 'gemini-1.5-flash',
-    APIFY_API_TOKEN: process.env.APIFY_API_TOKEN || 'placeholder_apify_token',
+    APIFY_API_TOKEN: (() => {
+      const token = process.env.APIFY_API_TOKEN || 'placeholder_apify_token'
+      console.log('[CONFIG DEBUG] APIFY_API_TOKEN loaded:', token.substring(0, 10) + '...')
+      return token
+    })(),
     APIFY_ACTOR_URL_SCRAPER:
       process.env.APIFY_ACTOR_URL_SCRAPER ||
       'tri_angle/airbnb-rooms-urls-scraper',

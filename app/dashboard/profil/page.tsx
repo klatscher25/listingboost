@@ -53,49 +53,103 @@ export default async function ProfilPage() {
           </Suspense>
         </div>
 
-        {/* Account Security Section */}
+        {/* Quick Settings Overview */}
         <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Konto Sicherheit
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">
-                  E-Mail-Adresse
-                </h3>
-                <p className="text-sm text-gray-600">{user.email}</p>
-              </div>
-              <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                Ändern
-              </button>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-gray-900">
+              Konto & Einstellungen
+            </h2>
+            <a
+              href="/dashboard/einstellungen"
+              className="text-blue-600 hover:text-blue-800 text-sm font-medium inline-flex items-center"
+            >
+              Alle Einstellungen
+              <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
+          
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
+                E-Mail-Adresse
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">{user.email}</p>
+              <a
+                href="/dashboard/einstellungen"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Ändern →
+              </a>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900">Passwort</h3>
-                <p className="text-sm text-gray-600">
-                  Zuletzt geändert vor 30 Tagen
-                </p>
-              </div>
-              <button className="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                Passwort ändern
-              </button>
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
+                Passwort & Sicherheit
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Passwort und Sicherheitseinstellungen verwalten
+              </p>
+              <a
+                href="/dashboard/einstellungen"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Verwalten →
+              </a>
+            </div>
+
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
+                Benachrichtigungen
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                E-Mail- und System-Benachrichtigungen anpassen
+              </p>
+              <a
+                href="/dashboard/einstellungen"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Konfigurieren →
+              </a>
+            </div>
+
+            <div className="border border-gray-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-gray-900 mb-2">
+                Datenschutz
+              </h3>
+              <p className="text-sm text-gray-600 mb-3">
+                Datenschutz- und Cookie-Einstellungen verwalten
+              </p>
+              <a
+                href="/dashboard/einstellungen"
+                className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+              >
+                Konfigurieren →
+              </a>
             </div>
           </div>
         </div>
 
         {/* Danger Zone */}
         <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <h2 className="text-xl font-semibold text-red-900 mb-4">
-            Gefahrenbereich
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-red-900">
+              Gefahrenbereich
+            </h2>
+            <a
+              href="/dashboard/einstellungen"
+              className="text-red-600 hover:text-red-800 text-sm font-medium inline-flex items-center"
+            >
+              Konto verwalten
+              <svg className="ml-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          </div>
           <p className="text-sm text-red-700 mb-4">
-            Die folgenden Aktionen können nicht rückgängig gemacht werden.
+            Kritische Konto-Aktionen wie Datenlöschung und Konto-Schließung finden Sie in den Einstellungen.
           </p>
-          <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">
-            Konto löschen
-          </button>
         </div>
       </div>
     </div>

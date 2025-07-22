@@ -85,7 +85,62 @@ export class ApifyClient {
   }
 
   /**
-   * Run an Apify actor with input data and options
+   * Run an Apify actor synchronously and get dataset items directly
+   * Uses the /run-sync-get-dataset-items endpoint to avoid polling
+   */
+  async runActorSync<T = unknown>(
+    actorId: string,
+    input: Record<string, unknown>,
+    options: ApifyRequestOptions = {}
+  ): Promise<ApifyActorResult<T>> {
+    const {
+      timeout = 60, // 60 seconds default
+      memory = 2048, // 2GB default
+    } = options
+
+    console.log(`[Apify] Running actor ${actorId} synchronously`)
+    console.log(`[Apify] Input:`, JSON.stringify(input, null, 2))
+    console.log(`[Apify] Options: timeout=${timeout}s, memory=${memory}MB`)
+
+    // Convert to API format
+    const apiActorId = this.toApiFormat(actorId)
+    const endpoint = `/acts/${apiActorId}/run-sync-get-dataset-items`
+    
+    try {
+      console.log(`[Apify] Calling synchronous endpoint: POST ${endpoint}`)
+      
+      const data = await this.makeRequest<T[]>('POST', endpoint, {
+        ...input,
+        // Add Actor options as query parameters via body
+        options: {
+          memoryMbytes: memory,
+          timeoutSecs: timeout,
+        }
+      })
+
+      console.log(`[Apify] ✅ Synchronous call successful!`, {
+        itemCount: data?.length || 0,
+        firstItemKeys: data?.[0] ? Object.keys(data[0]).slice(0, 5) : []
+      })
+
+      return {
+        data: data || [],
+        executionId: 'sync-' + Date.now(),
+        status: 'SUCCEEDED',
+        statusMessage: 'Completed synchronously',
+      }
+    } catch (error) {
+      console.error(`[Apify] Synchronous call failed:`, error)
+      throw new ApifyError({
+        type: 'ACTOR_FAILED',
+        message: `Synchronous actor call failed: ${(error as Error)?.message}`,
+        actorId,
+      })
+    }
+  }
+
+  /**
+   * Run an Apify actor with input data and options (LEGACY - with polling)
    */
   async runActor<T = unknown>(
     actorId: string,
@@ -234,11 +289,15 @@ export class ApifyClient {
     const startTime = Date.now()
     const pollInterval = 2000 // 2 seconds
 
+    console.log(`[Apify] Waiting for actor run completion: ${runId}`)
+
     while (Date.now() - startTime < timeoutMs) {
       try {
         const run = await this.makeRequest<any>('GET', `/actor-runs/${runId}`)
 
         if (run.status === 'SUCCEEDED') {
+          console.log(`[Apify] ✅ Actor completed successfully`)
+          
           // Get the dataset items
           const datasetId = run.defaultDatasetId
           const data = await this.getDatasetItems<T>(datasetId)
@@ -254,6 +313,8 @@ export class ApifyClient {
           run.status === 'ABORTED' ||
           run.status === 'TIMED-OUT'
         ) {
+          console.log(`[Apify] ❌ Actor failed with status: ${run.status}`)
+          
           return {
             data: [],
             executionId: runId,
@@ -269,12 +330,13 @@ export class ApifyClient {
         // Still running, wait and poll again
         await this.delay(pollInterval)
       } catch (error) {
-        console.error('[Apify] Fehler beim Prüfen des Run-Status:', error)
+        console.error(`[Apify] Error during polling:`, (error as Error)?.message)
         await this.delay(pollInterval)
       }
     }
 
     // Timeout reached
+    console.log(`[Apify] ❌ Timeout reached after ${timeoutMs}ms`)
     throw new ApifyError({
       type: 'TIMEOUT',
       message: `Actor-Run ${runId} Timeout nach ${timeoutMs}ms erreicht`,
@@ -287,13 +349,19 @@ export class ApifyClient {
    */
   private async getDatasetItems<T>(datasetId: string): Promise<T[]> {
     try {
+      console.log(`[Apify] Getting dataset items: ${datasetId}`)
+      
       const response = await this.makeRequest<{ items: T[] }>(
         'GET',
         `/datasets/${datasetId}/items`
       )
-      return response.items || (response as unknown as T[])
+      
+      const items = response.items || (response as unknown as T[])
+      console.log(`[Apify] Retrieved ${items?.length || 0} items`)
+      
+      return items
     } catch (error) {
-      console.error('[Apify] Fehler beim Laden der Dataset-Items:', error)
+      console.error('[Apify] Error loading dataset items:', (error as Error)?.message)
       return []
     }
   }

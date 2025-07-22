@@ -4,10 +4,11 @@
 **SaaS für Airbnb-Listing Optimierung mit KI-gestützter Analyse**
 
 ### Core Value Proposition
+- **Freemium Lead-Generation**: Kostenlose Analyse mit echten Daten als Einstiegspunkt
 - Automatisierte Listing-Analyse (0-1000 Punkte Score)
 - KI-generierte Optimierungsempfehlungen
 - Performance Monitoring & Competitor-Tracking
-- Gestaffeltes Subscription-Modell
+- Gestaffeltes Subscription-Modell mit strategischen Upgrade-CTAs
 
 ---
 
@@ -38,11 +39,12 @@ API: Next.js API Routes (app/api)
 
 External Services
 
-bashScraping: Apify Platform (details see ApifyScraper.md)
+bashScraping: Apify Platform (URL Scraper for freemium + full suite)
 AI: Google Gemini 2.5 Flash
 Payments: Stripe (subscriptions + one-time)
-Images: Cloudinary (optimization + AI features)
+Images: Cloudinary (optimization + AI features) + Picsum Photos (fallback)
 Email: Brevo (transactional emails)
+Fallbacks: Enhanced fake data generation for reliability
 
 Infrastructure
 
@@ -76,10 +78,23 @@ Environment: .env.localChat-Steuerung Sonnet 4Smart, efficient model for everyda
 
 ### 4. Subscription Management
 **Integration**: Stripe Billing
-- Free tier: 1 analysis
-- Starter: €29 one-time
-- Growth: €19/month
-- Professional: €49/month
+- **Freemium**: Unlimited fake analyses + email collection (lead generation)
+- **Starter**: €29 one-time (real analysis, limited features)
+- **Growth**: €19/month (full analysis + recommendations)
+- **Professional**: €49/month (advanced features + competitor tracking)
+
+### 5. Enhanced Freemium Lead-Generation System with Real Data
+**Routes**: `/freemium/*` + `/api/freemium/analyze`
+- Landing page with URL input and validation
+- **ENHANCED**: Shortened analysis simulation (5 steps, 18 seconds for better UX)
+- **NEW**: Real Apify URL scraper integration with 25s timeout
+- **NEW**: Graceful fallback to enhanced fake data on scraping failure
+- **NEW**: 1-hour caching layer for performance optimization
+- Email collection with token-based dashboard access
+- **ENHANCED**: Modern glassmorphic dashboard with real listing images
+- **NEW**: Live data indicator (real vs demo mode)
+- **NEW**: Strategic upgrade CTAs with locked premium features
+- Development test bypass for streamlined testing
 
 
 
@@ -101,19 +116,25 @@ Environment: .env.localChat-Steuerung Sonnet 4Smart, efficient model for everyda
 
 ## 📱 User Journey
 
-### Onboarding
-1. Landing page visit
-2. Free analysis signup
-3. Airbnb URL input
-4. Email + basic score
-5. Upsell to paid plans
+### Enhanced Freemium Lead-Generation Flow with Real Data (PRIMARY)
+1. **Landing Page**: User clicks "Kostenlose Analyse starten" → `/freemium`
+2. **URL Collection**: User enters Airbnb URL with validation → `/freemium/analyze`
+3. **Fast Analysis**: Realistic 5-step simulation (18 seconds, 47% faster) → `/freemium/email`
+4. **Email Collection**: Email capture with test bypass for development → `/freemium/dashboard/[token]`
+5. **Real Data Dashboard**: 
+   - Real Apify scraping attempt with 25s timeout
+   - Graceful fallback to enhanced fake data if scraping fails
+   - Display real listing images, ratings, host info, pricing
+   - Live/demo mode indicator for transparency
+   - Strategic conversion optimization with locked premium features
+   - 1-hour caching for performance → conversion to paid plans
 
-### Paid User Flow
-1. Dashboard overview
-2. Add listings
-3. View analysis reports
-4. Implement recommendations
-5. Track improvements
+### Paid User Flow (AFTER CONVERSION)
+1. **Registration**: From freemium upsell → `/auth/register`
+2. **Dashboard Access**: Full analysis features → `/dashboard`
+3. **Premium Analytics**: Complete reports and recommendations
+4. **Performance Tracking**: Monitor improvements over time
+5. **Advanced Features**: Competitor analysis, price optimization
 
 ---
 
@@ -126,10 +147,15 @@ Environment: .env.localChat-Steuerung Sonnet 4Smart, efficient model for everyda
 - **Icons**: Lucide React
 
 ### Key Pages
-1. **Landing Page**: Conversion-optimized
-2. **Dashboard**: Data-heavy, clean layout
-3. **Analysis Report**: Detailed, actionable
-4. **Settings**: Subscription management
+1. **Landing Page**: Conversion-optimized with freemium CTA
+2. **Freemium Flow**: Multi-step lead generation system
+   - URL input page (`/freemium`)
+   - Fake analysis simulation (`/freemium/analyze`)
+   - Email collection (`/freemium/email`)
+   - Free dashboard with upsells (`/freemium/dashboard/[token]`)
+3. **Dashboard**: Data-heavy, clean layout for paid users
+4. **Analysis Report**: Detailed, actionable recommendations
+5. **Settings**: Subscription management and user preferences
 
 ---
 

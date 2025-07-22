@@ -822,6 +822,58 @@ Feature-Set:
 features: JSONB (Array verfügbarer Features wie "competitor_tracking", "api_access", "priority_support")
 
 
+---
+
+### **TABELLE: analysis_results** ✅
+**Zweck:** AI-Analyse-Resultate und Insights-Caching für Freemium & Premium Features  
+**Status:** ✅ Produktiv erstellt (2025-07-22 Migration)
+
+**Primärschlüssel & Beziehungen:**
+- `id`: UUID, automatisch generiert
+- `user_id`: UUID, NICHT NULL, Referenz zu profiles (CASCADE DELETE)
+- `listing_id`: UUID, Referenz zu listings (CASCADE DELETE, optional für freemium)
+
+**Analyse-Kategorisierung:**
+- `analysis_type`: TEXT, NICHT NULL ("full", "freemium", "quick", "competitor")
+- `status`: TEXT, Standard 'pending' ("pending", "processing", "completed", "failed")
+
+**AI-Analyse-Daten (Gemini & GPT Integration):**
+- `ai_insights`: TEXT (JSON string mit strukturierten KI-Empfehlungen)
+- `gemini_response`: TEXT (Raw Gemini API Response für Debugging)
+- `processing_error`: TEXT (Fehlermeldung bei gescheiterten Analysen)
+
+**Performance-Tracking:**
+- `processing_started_at`: TIMESTAMPTZ (Start der AI-Verarbeitung)
+- `processing_completed_at`: TIMESTAMPTZ (Ende der AI-Verarbeitung)
+- `processing_duration_seconds`: INTEGER (Verarbeitungsdauer für Optimierung)
+
+**Metadaten & Caching:**
+- `metadata`: JSONB, Standard '{}' (Freemium-Token, Caching-Info, etc.)
+- `created_at`: TIMESTAMPTZ, Standard NOW()
+- `updated_at`: TIMESTAMPTZ, Standard NOW() (mit Update-Trigger)
+
+**Indizes für Performance:**
+```sql
+CREATE INDEX idx_analysis_results_user_id ON analysis_results(user_id);
+CREATE INDEX idx_analysis_results_listing_id ON analysis_results(listing_id);
+CREATE INDEX idx_analysis_results_type ON analysis_results(analysis_type);
+CREATE INDEX idx_analysis_results_status ON analysis_results(status);
+CREATE INDEX idx_analysis_results_created ON analysis_results(created_at);
+CREATE INDEX idx_analysis_results_metadata ON analysis_results USING GIN(metadata);
+```
+
+**Row Level Security (RLS):**
+- Aktiviert mit User-basierten Policies
+- Users können nur eigene analysis_results sehen/bearbeiten
+- System kann über Service-Role alle Operationen durchführen
+
+**Verwendung:**
+- **Freemium Flow**: Caching von AI-Insights für 30-Tage-Wiederverwendung
+- **Premium Features**: Vollständige Analyse-Historien und Vergleiche
+- **Performance**: Vermeidet Doppel-Analysen durch intelligentes Caching
+
+---
+
 🔧 Schema-Erweiterungen für bestehende Tabellen
 Erweiterung: listings
 Zusätzliche Felder für SaaS-Integration:

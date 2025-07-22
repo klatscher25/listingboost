@@ -103,17 +103,17 @@ export default function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
               <button 
-                onClick={() => router.push('/auth/register')}
+                onClick={() => router.push('/freemium')}
                 className="group relative bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-lg min-w-[280px]"
               >
                 <span className="relative z-10">🚀 Kostenlose Analyse starten</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-purple-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
               <button 
-                onClick={() => router.push('/dashboard/analyze')}
+                onClick={() => router.push('/auth/login')}
                 className="group bg-white/90 backdrop-blur-sm text-slate-700 px-8 py-4 rounded-xl font-semibold border border-slate-200 shadow-lg hover:shadow-xl hover:bg-white transition-all duration-300 text-lg min-w-[200px]"
               >
-                <span className="group-hover:text-blue-600 transition-colors duration-200">📊 Demo ansehen</span>
+                <span className="group-hover:text-blue-600 transition-colors duration-200">👤 Anmelden</span>
               </button>
             </div>
           </div>

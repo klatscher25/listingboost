@@ -120,7 +120,8 @@ export function transformListingData(
       : null,
     currency: 'EUR', // DACH market default
 
-    // Images
+    // Images  
+    images: scrapedData.images || null,
     images_count: scrapedData.images?.length || null,
 
     // Amenities (Boolean fields)
