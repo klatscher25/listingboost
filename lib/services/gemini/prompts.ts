@@ -1,162 +1,385 @@
 /**
  * @file lib/services/gemini/prompts.ts
- * @description Gemini AI prompts - externed to fix webpack performance warning
+ * @description AI analysis prompts for Gemini service
  * @created 2025-07-22
- * @todo PERFORMANCE-001: Fix 108kiB string serialization warning
+ * @modified 2025-07-22
+ * @todo Extracted from analyzer.ts for CLAUDE.md compliance
  */
 
-export const createGermanAirbnbPrompt = (listingData: {
-  title: string
-  description?: string
-  propertyType: string
-  roomType: string
-  personCapacity: number
-  bedrooms?: number
-  rating: {
-    guestSatisfaction: number
-    accuracy: number
-    cleanliness: number
-    location: number
-    value: number
-    reviewsCount: number
-  }
-  host: {
-    name: string
-    isSuperHost: boolean
-    responseRate?: string
-    responseTime?: string
-  }
-  price: {
-    amount: string
-    qualifier: string
-  }
-  availableAmenities: string
-  currentSeason: string
-}): string => {
-  return `Du bist ein deutscher Airbnb-Optimierungsexperte. Analysiere dieses Listing OHNE erfundene Marktdaten zu verwenden. Arbeite nur mit den vorhandenen Listing-Informationen.
+/**
+ * Create sentiment analysis prompt for reviews
+ */
+export function createSentimentAnalysisPrompt(
+  reviews: string[],
+  language: string = 'de'
+): string {
+  return `
+Du bist ein Experte für Airbnb-Bewertungsanalyse. Analysiere die folgenden Gästebewertungen und erstelle eine detaillierte Sentiment-Analyse.
 
-LISTING DETAILS:
-- Titel: "${listingData.title}"
-- Beschreibung: "${listingData.description?.substring(0, 500) || 'Keine Beschreibung'}${(listingData.description?.length || 0) > 500 ? '...' : ''}"
-- Typ: ${listingData.propertyType}, ${listingData.roomType}
-- Kapazität: ${listingData.personCapacity} Gäste, ${listingData.bedrooms || 'N/A'} Schlafzimmer
-- Bewertung: ${listingData.rating.guestSatisfaction}/5 (${listingData.rating.reviewsCount} Bewertungen)
-- Einzelbewertungen: Genauigkeit ${listingData.rating.accuracy}/5, Sauberkeit ${listingData.rating.cleanliness}/5, Lage ${listingData.rating.location}/5, Preis-Leistung ${listingData.rating.value}/5
-- Host: ${listingData.host.name}${listingData.host.isSuperHost ? ' (Superhost)' : ''}
-- Antwortrate: ${listingData.host.responseRate || 'N/A'}
-- Antwortzeit: ${listingData.host.responseTime || 'N/A'}
-- Preis: €${listingData.price.amount} pro ${listingData.price.qualifier}
-- Verfügbare Ausstattung: ${listingData.availableAmenities || 'Keine Details verfügbar'}
-- Aktuelle Saison: ${listingData.currentSeason}
+**Bewertungen:**
+${reviews
+  .slice(0, 20)
+  .map((review, idx) => `${idx + 1}. ${review}`)
+  .join('\n')}
 
-WICHTIG: 
-- Verwende KEINE erfundenen Konkurrenz- oder Marktdaten
-- Fokussiere dich auf ECHTE Verbesserungen basierend auf den vorhandenen Listing-Daten
-- ALLE Empfehlungen, Vorschläge und Texte müssen komplett auf DEUTSCH sein
-- Keine englischen Wörter oder gemischtsprachigen Empfehlungen verwenden
-- Zielgruppe sind deutsche Airbnb-Hosts und -Gäste
+**Aufgabe:**
+Analysiere diese Bewertungen und erstelle ein JSON-Objekt mit folgender Struktur:
 
-TITEL-ANALYSE SPEZIFISCH:
-- Analysiere den aktuellen Titel: "${listingData.title}"
-- Identifiziere spezifische Schwächen: Redundanz, fehlende Location, fehlende Features
-- Gib konkrete Verbesserungsvorschläge basierend auf den echten Listing-Daten
-- Beispiel: Wenn Titel "Private Privatzimmer" enthält → "Redundanz entfernen, Location hinzufügen"
+{
+  "overallSentiment": "positive/neutral/negative",
+  "positiveAspects": ["Aspekt 1", "Aspekt 2", ...],
+  "negativeAspects": ["Aspekt 1", "Aspekt 2", ...],
+  "commonThemes": ["Thema 1", "Thema 2", ...],
+  "guestSatisfactionDrivers": ["Treiber 1", "Treiber 2", ...],
+  "improvementAreas": ["Bereich 1", "Bereich 2", ...],
+  "emotionalTone": "enthusiastic/satisfied/disappointed/frustrated",
+  "specificComplaints": ["Beschwerde 1", "Beschwerde 2", ...],
+  "specificPraises": ["Lob 1", "Lob 2", ...],
+  "confidenceScore": 0.85
+}
 
-Erstelle praktische deutsche Optimierungsempfehlungen im folgenden JSON-Format:
+**Wichtige Hinweise:**
+- Fokussiere auf deutsche Bewertungen und deutsche Antworten
+- Achte auf wiederkehrende Themen und Muster
+- Identifiziere spezifische Verbesserungsmöglichkeiten
+- Bewerte die Zuverlässigkeit deiner Analyse (confidenceScore)
+- Nutze nur Informationen aus den gegebenen Bewertungen
+
+Antworte nur mit dem JSON-Objekt, ohne zusätzlichen Text.
+`
+}
+
+/**
+ * Create description analysis prompt
+ */
+export function createDescriptionAnalysisPrompt(
+  title: string,
+  description: string,
+  propertyType: string,
+  location?: string
+): string {
+  return `
+Du bist ein Experte für Airbnb-Listing-Optimierung. Analysiere Titel und Beschreibung dieser Unterkunft.
+
+**Listing-Details:**
+- Titel: "${title}"
+- Beschreibung: "${description}"
+- Immobilienart: "${propertyType}"
+${location ? `- Lage: "${location}"` : ''}
+
+**Aufgabe:**
+Erstelle eine detaillierte Analyse und liefere ein JSON-Objekt:
+
+{
+  "titleAnalysis": {
+    "clarity": 8,
+    "appeal": 7,
+    "keywords": ["keyword1", "keyword2"],
+    "improvements": ["Verbesserung 1", "Verbesserung 2"],
+    "lengthOptimal": true
+  },
+  "descriptionAnalysis": {
+    "completeness": 6,
+    "engagement": 7,
+    "structure": 8,
+    "missingElements": ["Element 1", "Element 2"],
+    "strengths": ["Stärke 1", "Stärke 2"],
+    "improvements": ["Verbesserung 1", "Verbesserung 2"]
+  },
+  "keywordOptimization": {
+    "currentKeywords": ["keyword1", "keyword2"],
+    "suggestedKeywords": ["suggested1", "suggested2"],
+    "localKeywords": ["lokal1", "lokal2"]
+  },
+  "competitiveAdvantage": ["Vorteil 1", "Vorteil 2"],
+  "confidenceScore": 0.88
+}
+
+**Bewertungskriterien:**
+- Clarity: Ist der Titel klar und verständlich? (1-10)
+- Appeal: Wie ansprechend ist der Titel? (1-10)
+- Completeness: Wie vollständig ist die Beschreibung? (1-10)
+- Engagement: Wie einladend ist der Text? (1-10)
+- Structure: Ist der Text gut strukturiert? (1-10)
+
+Antworte nur mit dem JSON-Objekt.
+`
+}
+
+/**
+ * Create amenity gap analysis prompt
+ */
+export function createAmenityGapAnalysisPrompt(
+  currentAmenities: any[],
+  propertyType: string,
+  location?: string,
+  priceRange?: string
+): string {
+  const amenitiesString = currentAmenities
+    .map((amenity) =>
+      typeof amenity === 'object'
+        ? `${amenity.name || amenity.title}: ${amenity.available ? 'Ja' : 'Nein'}`
+        : amenity
+    )
+    .join(', ')
+
+  return `
+Du bist ein Experte für Airbnb-Ausstattungsanalyse. Analysiere die aktuelle Ausstattung und identifiziere Lücken.
+
+**Unterkunfts-Details:**
+- Typ: "${propertyType}"
+${location ? `- Lage: "${location}"` : ''}
+${priceRange ? `- Preisbereich: "${priceRange}"` : ''}
+- Aktuelle Ausstattung: ${amenitiesString}
+
+**Aufgabe:**
+Erstelle eine Lückenanalyse und liefere ein JSON-Objekt:
+
+{
+  "missingEssentials": [
+    {
+      "name": "WLAN",
+      "importance": "critical",
+      "impactOnBookings": 95,
+      "costToImplement": "low",
+      "timeToImplement": "immediate"
+    }
+  ],
+  "missingComfort": [
+    {
+      "name": "Klimaanlage",
+      "importance": "high",
+      "impactOnBookings": 75,
+      "costToImplement": "medium",
+      "timeToImplement": "1-2 weeks"
+    }
+  ],
+  "luxuryUpgrades": [
+    {
+      "name": "Hot Tub",
+      "importance": "nice-to-have",
+      "impactOnBookings": 40,
+      "costToImplement": "high",
+      "timeToImplement": "1-2 months"
+    }
+  ],
+  "competitiveGaps": ["Gap 1", "Gap 2"],
+  "priorityRecommendations": [
+    {
+      "amenity": "WLAN",
+      "reason": "Essentiell für 95% der Gäste",
+      "roi": "sehr hoch",
+      "priority": 1
+    }
+  ],
+  "confidenceScore": 0.92
+}
+
+**Bewertungskriterien:**
+- Importance: critical/high/medium/low/nice-to-have
+- Impact: Wahrscheinlicher Einfluss auf Buchungen (0-100%)
+- Cost: low/medium/high
+- Time: immediate/days/weeks/months
+
+Berücksichtige deutsche Marktstandards und Gästeerwartungen.
+
+Antworte nur mit dem JSON-Objekt.
+`
+}
+
+/**
+ * Create pricing analysis prompt
+ */
+export function createPricingAnalysisPrompt(
+  currentPrice: number,
+  propertyType: string,
+  amenities: string[],
+  location?: string,
+  seasonality?: string
+): string {
+  return `
+Du bist ein Experte für Airbnb-Preisoptimierung. Analysiere die aktuelle Preisstrategie.
+
+**Unterkunfts-Details:**
+- Aktueller Preis: €${currentPrice} pro Nacht
+- Typ: "${propertyType}"
+- Ausstattung: ${amenities.join(', ')}
+${location ? `- Lage: "${location}"` : ''}
+${seasonality ? `- Saison: "${seasonality}"` : ''}
+
+**Aufgabe:**
+Erstelle eine Preisanalyse und liefere ein JSON-Objekt:
+
+{
+  "priceAssessment": {
+    "currentPrice": ${currentPrice},
+    "marketPosition": "below/at/above market",
+    "competitiveness": 7.5,
+    "valuePerception": 8.2
+  },
+  "recommendedPricing": {
+    "basePrice": 85,
+    "weekendPremium": 1.2,
+    "seasonalAdjustments": {
+      "summer": 1.3,
+      "winter": 0.9,
+      "holidays": 1.5
+    },
+    "lastMinuteDiscount": 0.85
+  },
+  "pricingStrategy": {
+    "approach": "dynamic/fixed/hybrid",
+    "keyFactors": ["Faktor 1", "Faktor 2"],
+    "riskAssessment": "low/medium/high"
+  },
+  "revenueProjection": {
+    "currentAnnualRevenue": 12000,
+    "optimizedAnnualRevenue": 15600,
+    "potentialIncrease": "30%"
+  },
+  "actionableInsights": [
+    "Insight 1",
+    "Insight 2"
+  ],
+  "confidenceScore": 0.85
+}
+
+**Berücksichtige:**
+- Deutsche Marktverhältnisse
+- Saisonale Schwankungen
+- Konkurrenzsituation
+- Ausstattungsqualität
+
+Antworte nur mit dem JSON-Objekt.
+`
+}
+
+/**
+ * Create optimization recommendations prompt
+ */
+export function createOptimizationPrompt(
+  data: any,
+  analysisResults: any
+): string {
+  return `
+Du bist ein Airbnb-Optimierungsexperte. Basierend auf allen verfügbaren Daten, erstelle konkrete Handlungsempfehlungen.
+
+**Verfügbare Daten:**
+- Listing-Details: ${JSON.stringify(data, null, 2).substring(0, 500)}...
+- Bisherige Analysen: ${JSON.stringify(analysisResults, null, 2).substring(0, 500)}...
+
+**Aufgabe:**
+Erstelle konkrete Optimierungsempfehlungen als JSON-Objekt:
+
+{
+  "immediateActions": [
+    {
+      "action": "WLAN-Verfügbarkeit in Titel erwähnen",
+      "category": "titel",
+      "impact": "high",
+      "effort": "low",
+      "timeline": "heute",
+      "expectedOutcome": "+15% mehr Klicks"
+    }
+  ],
+  "shortTermImprovements": [
+    {
+      "action": "Professionelle Fotos anfertigen lassen",
+      "category": "fotos",
+      "impact": "high",
+      "effort": "medium",
+      "timeline": "1-2 Wochen",
+      "expectedOutcome": "+25% höhere Conversion"
+    }
+  ],
+  "longTermStrategies": [
+    {
+      "action": "Klimaanlage installieren",
+      "category": "ausstattung",
+      "impact": "medium",
+      "effort": "high",
+      "timeline": "1-2 Monate",
+      "expectedOutcome": "+€200 monatliches Plus"
+    }
+  ],
+  "priorityMatrix": {
+    "highImpactLowEffort": ["Action 1", "Action 2"],
+    "highImpactHighEffort": ["Action 3"],
+    "lowImpactLowEffort": ["Action 4"]
+  },
+  "overallStrategy": "Fokus auf schnelle Gewinne, dann strukturelle Verbesserungen",
+  "confidenceScore": 0.91
+}
+
+**Kategorien:**
+- titel, beschreibung, fotos, preise, ausstattung, service, marketing
+
+**Impact:** high/medium/low
+**Effort:** low/medium/high
+**Timeline:** heute/diese-woche/1-2-wochen/1-2-monate
+
+Fokussiere auf den deutschen Markt und realisierbare Verbesserungen.
+
+Antworte nur mit dem JSON-Objekt.
+`
+}
+
+/**
+ * Create German Airbnb analysis prompt for AI insights
+ */
+export function createGermanAirbnbPrompt(
+  listingData: any,
+  analysisType: string = 'comprehensive'
+): string {
+  return `
+Du bist ein Experte für Airbnb-Optimierung im deutschen Markt. Analysiere dieses Listing und erstelle personalisierte deutsche Verbesserungsvorschläge.
+
+**Listing-Daten:**
+${JSON.stringify(listingData, null, 2).substring(0, 2000)}...
+
+**Aufgabe:**
+Erstelle eine detaillierte deutsche Analyse als JSON-Objekt:
 
 {
   "listingOptimization": {
     "titleScore": 75,
-    "titleSuggestions": [
-      "Fügen Sie lokale Highlights hinzu (z.B. '5 Min zum Hauptbahnhof')",
-      "Erwähnen Sie besondere Features (z.B. 'Balkon mit Stadtblick')"
-    ],
+    "titleSuggestions": ["Verbesserung 1", "Verbesserung 2"],
     "descriptionScore": 68,
-    "descriptionImprovements": [
-      "Beschreiben Sie die Nachbarschaft detaillierter",
-      "Erwähnen Sie nahegelegene Restaurants oder Sehenswürdigkeiten",
-      "Fügen Sie praktische Infos wie WLAN-Geschwindigkeit hinzu"
-    ],
-    "photoScore": 72,
-    "photoRecommendations": [
-      "Zeigen Sie alle Räume, besonders das Badezimmer",
-      "Fotografieren Sie bei Tageslicht für hellere Aufnahmen",
-      "Fügen Sie ein Foto der Nachbarschaft hinzu"
-    ],
-    "amenityScore": 70,
-    "missingAmenities": [
-      "Fön (wird oft erwartet)",
-      "Bügeleisen (praktisch für Geschäftsreisende)",
-      "Kaffeemaschine (beliebtes Extra)"
-    ]
+    "descriptionImprovements": ["Verbesserung 1", "Verbesserung 2"],
+    "photoScore": 80,
+    "photoRecommendations": ["Empfehlung 1", "Empfehlung 2"],
+    "amenityScore": 72,
+    "missingAmenities": ["WLAN", "Klimaanlage"]
   },
   "hostCredibility": {
-    "currentScore": 82,
-    "improvementTips": [
-      "Vervollständigen Sie Ihr Host-Profil mit Foto und Beschreibung",
-      "Antworten Sie innerhalb einer Stunde auf Anfragen",
-      "Sammeln Sie mehr Bewertungen für Vertrauensaufbau"
-    ],
-    "superhostBenefits": [
-      "20% höhere Buchungsrate als normale Hosts",
-      "Frühere Auszahlung von Einnahmen",
-      "Prioritärer Kundenservice von Airbnb"
-    ]
+    "currentScore": 85,
+    "improvementTips": ["Tipp 1", "Tipp 2"],
+    "superhostBenefits": ["Vorteil 1", "Vorteil 2"]
   },
   "seasonalOptimization": {
-    "currentSeason": "${listingData.currentSeason}",
-    "seasonalTips": [
-      "${listingData.currentSeason === 'Sommer' ? 'Erwähnen Sie Klimaanlage oder Ventilator in der Beschreibung' : 
-       listingData.currentSeason === 'Winter' ? 'Betonen Sie warme Heizung und gemütliche Atmosphäre' :
-       listingData.currentSeason === 'Frühling' ? 'Heben Sie nahegelegene Parks und Frühlingsfeste hervor' :
-       'Erwähnen Sie herbstliche Aktivitäten und warme Getränke'}",
-      "Passen Sie Fotos an die Jahreszeit an",
-      "Erwähnen Sie saisonale Attraktionen in der Umgebung"
-    ],
-    "pricingHints": [
-      "${listingData.currentSeason === 'Sommer' ? 'Hauptsaison: Preise um 15-25% erhöhen' :
-       listingData.currentSeason === 'Winter' ? 'Winterrabatte anbieten für längere Aufenthalte' :
-       'Übergangszeiten: Flexible Stornierungsrichtlinien anbieten'}",
-      "Wochenende-Zuschläge von 20-30% sind üblich",
-      "Mindestaufenthalt von 2 Nächten für bessere Rentabilität"
-    ]
+    "currentSeason": "Winter",
+    "seasonalTips": ["Tipp 1", "Tipp 2"],
+    "pricingHints": ["Hinweis 1", "Hinweis 2"]
   },
   "ratingImprovement": {
-    "currentStrengths": [
-      "${listingData.rating.cleanliness >= 4.5 ? 'Ausgezeichnete Sauberkeit (' + listingData.rating.cleanliness + '/5)' : ''}",
-      "${listingData.rating.location >= 4.5 ? 'Hervorragende Lage (' + listingData.rating.location + '/5)' : ''}",
-      "${listingData.rating.accuracy >= 4.5 ? 'Sehr genaue Listing-Beschreibung (' + listingData.rating.accuracy + '/5)' : ''}"
-    ].filter(Boolean),
-    "improvementAreas": [
-      "${listingData.rating.value < 4.5 ? 'Preis-Leistung verbessern (derzeit ' + listingData.rating.value + '/5)' : ''}",
-      "${listingData.rating.cleanliness < 4.5 ? 'Sauberkeitsstandards erhöhen (derzeit ' + listingData.rating.cleanliness + '/5)' : ''}",
-      "${listingData.rating.accuracy < 4.5 ? 'Listing-Beschreibung präziser gestalten (derzeit ' + listingData.rating.accuracy + '/5)' : ''}"
-    ].filter(Boolean),
-    "guestExperienceTips": [
-      "Willkommensnachricht mit lokalen Empfehlungen senden",
-      "Kleine Aufmerksamkeiten bereitstellen (Kaffee, Snacks)",
-      "Detaillierte Anleitung für Check-in und lokale Gegebenheiten"
-    ]
+    "currentStrengths": ["Stärke 1", "Stärke 2"],
+    "improvementAreas": ["Bereich 1", "Bereich 2"],
+    "guestExperienceTips": ["Tipp 1", "Tipp 2"]
   },
   "amenityGapAnalysis": {
-    "criticalGaps": [
-      "Schnelles WLAN (für Geschäftsreisende essentiell)",
-      "Grundausstattung Küche (Töpfe, Pfannen, Geschirr)",
-      "Frische Handtücher und Bettwäsche"
-    ],
-    "budgetFriendlyUpgrades": [
-      "Fön für 20-30€",
-      "Kaffeemaschine für 50-80€",
-      "Bügeleisen und -brett für 30-40€",
-      "Zusätzliche Kissen und Decken"
-    ],
-    "highImpactAdditions": [
-      "Smart-TV mit Netflix/Prime (moderne Gäste erwarten das)",
-      "Arbeitsplatz mit gutem Licht (für Remote Work)",
-      "Willkommenskorb mit lokalen Produkten"
-    ]
+    "criticalGaps": ["WLAN", "Heizung"],
+    "budgetFriendlyUpgrades": ["Upgrade 1", "Upgrade 2"],
+    "highImpactAdditions": ["Addition 1", "Addition 2"]
   }
 }
 
-Antworte ausschließlich im JSON-Format ohne zusätzliche Erklärungen. Konzentriere dich auf REALISTISCHE und UMSETZBARE Empfehlungen für deutsche Gäste.`
+**Wichtige Hinweise:**
+- Alle Texte auf Deutsch
+- Fokus auf deutsche Marktgegebenheiten
+- Konkrete, umsetzbare Vorschläge
+- Realistische Bewertungen (20-100 Punkte)
+- Berücksichtige DACH-Region (Deutschland, Österreich, Schweiz)
+
+Antworte nur mit dem JSON-Objekt.
+`
 }
