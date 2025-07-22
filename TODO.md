@@ -373,3 +373,75 @@
 
 **Geschätzte Gesamtdauer**: 10-13 Arbeitstage
 **Business Impact**: 🚨 KRITISCH für Freemium-Conversion Erfolg
+
+---
+
+## 🚨 URGENT COMPLIANCE SPRINT
+
+### 🔥 CLAUDE.md COMPLIANCE FIXES
+**Status**: 🚨 CRITICAL | **Agent**: Code Quality Specialist | **Priority**: BLOCKING | **Duration**: 2-3 Tage
+
+**Mission**: Kritische CLAUDE.md Verstöße beheben - 6 Dateien überschreiten 400-Zeilen-Limit
+
+#### [🚨] COMPLIANCE-001-01: File Size Violations (CRITICAL)
+- Status: 📋 URGENT | **Priority**: 🚨 BLOCKING - Verhindert Production Deployment
+- **Critical Files**:
+  - [ ] `app/freemium/dashboard/[token]/page.tsx` (1743 lines → aufteilen in 8-10 Komponenten)
+  - [ ] `lib/services/gemini/analyzer.ts` (603 lines → Extract utilities & split by responsibility)
+  - [ ] `app/api/freemium/analyze/route.ts` (504 lines → Extract functions & middleware)
+  - [ ] `lib/services/apify/client.ts` (489 lines → Split by API responsibility)
+  - [ ] `lib/services/apify/index.ts` (484 lines → Separate concerns)
+  - [ ] `lib/services/enhanced-analysis.ts` (483 lines → Extract helper functions)
+- **Dependencies**: None (blocking issue)
+- **ETA**: 2 Arbeitstage
+- **Success Criteria**: Alle Dateien <400 Zeilen, Funktionalität erhalten
+
+#### [🔧] COMPLIANCE-001-02: Code Deduplication
+- Status: 📋 URGENT | **Priority**: 🟡 HIGH - Maintainability & DRY Principles
+- **Tasks**:
+  - [ ] API Error Handling Middleware (eliminiert 8+ duplizierte try-catch patterns)
+  - [ ] Database Token Query Utilities (3 redundante JSONB-Abfragen zusammenfassen)
+  - [ ] Standardized API Response Patterns (consistent error/success responses)
+  - [ ] Shared Component Interface Consolidation
+- **Dependencies**: COMPLIANCE-001-01
+- **ETA**: 1 Arbeitstag
+- **Success Criteria**: DRY-Prinzipien durchgesetzt, weniger redundanter Code
+
+#### [📏] COMPLIANCE-001-03: Automated Compliance Checks
+- Status: 📋 PLANNED | **Priority**: 🟢 LOW - Prevention
+- **Tasks**:
+  - [ ] File Size Check Script Integration (pre-commit hook)
+  - [ ] Code Quality Gates in CI/CD Pipeline
+  - [ ] Automated CLAUDE.md Compliance Validation
+- **Dependencies**: COMPLIANCE-001-01, COMPLIANCE-001-02
+- **ETA**: 0.5 Arbeitstage
+
+### 📊 COMPLIANCE STATUS
+
+**Current Compliance Score**: ❌ 84% (6 violations / 35+ core files)
+
+| Rule Category | Status | Details |
+|---------------|---------|---------|
+| File Size (<400 lines) | ❌ 84% | 6 critical violations |
+| Naming Conventions | ✅ 100% | All kebab-case, camelCase correct |
+| German Localization | ✅ 100% | Complete DACH compliance |
+| TypeScript Strict | ✅ 100% | No `any` types detected |
+| Security Rules | ✅ 100% | RLS policies, input validation |
+| Framework Setup | ✅ 100% | Tailwind v4, Next.js 15 correct |
+
+### 🎯 SUCCESS CRITERIA
+- [x] All builds pass (`npm run build` successful) ✅
+- [ ] **BLOCKING**: All files <400 lines (CLAUDE.md compliance)
+- [x] TypeScript strict mode (no `any` types) ✅
+- [x] German localization complete ✅
+- [x] Error handling in German ✅
+- [x] Responsive design tested ✅
+
+**Estimated Total Effort**: 2-3 Arbeitstage
+**Business Impact**: 🚨 BLOCKING für Production Launch - Muss vor Freemium-003 Sprint abgeschlossen sein
+
+---
+
+**System Status**: ⚠️ PRODUCTION-READY mit Compliance-Fixes benötigt
+**Next Critical Action**: File Size Compliance (CLAUDE.md violations)
+**Blocking**: COMPLIANCE-001 muss vor allen anderen Sprints abgeschlossen werden
