@@ -35,8 +35,7 @@ import type { Database } from '../types/database'
  */
 export const supabase = createClient<Database>(
   config.NEXT_PUBLIC_SUPABASE_URL || 'https://exarikehlmtczpaarfed.supabase.co',
-  config.SUPABASE_ANON_KEY ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YXJpa2VobG10Y3pwYWFyZmVkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTMwMjI4MjAsImV4cCI6MjA2ODU5ODgyMH0.B9syY3MN1bQDM8EZD26pqEcF39xwVm8yPNCoMFrkzhY',
+  config.SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY_HERE',
   {
     auth: {
       persistSession: true,
@@ -75,8 +74,7 @@ export const supabase = createClient<Database>(
  */
 export const supabaseAdmin = createClient<Database>(
   config.NEXT_PUBLIC_SUPABASE_URL || 'https://exarikehlmtczpaarfed.supabase.co',
-  config.SUPABASE_SERVICE_ROLE_KEY ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV4YXJpa2VobG10Y3pwYWFyZmVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MzAyMjgyMCwiZXhwIjoyMDY4NTk4ODIwfQ.Q8zXPPtpC0ZstcDQc57G6rWPP6PmwOQhOtSqYzT5DzQ',
+  config.SUPABASE_SERVICE_ROLE_KEY || 'YOUR_SUPABASE_SERVICE_ROLE_KEY_HERE',
   {
     auth: {
       autoRefreshToken: false,
