@@ -39,22 +39,12 @@ export class PricingAnalyzer {
       marketContext
     )
 
-    const request = {
-      contents: [
-        {
-          role: 'user' as const,
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.1,
-        maxOutputTokens: 1024,
-      },
-    }
+    const response = await this.client.generateContent(prompt, {
+      temperature: 0.1,
+      maxOutputTokens: 1024,
+    })
 
-    const response = await this.client.generateContent(request)
-    const analysisResult =
-      this.client.parseJSONResponse<PricingRecommendation>(response)
+    const analysisResult = JSON.parse(response) as PricingRecommendation
 
     return analysisResult
   }

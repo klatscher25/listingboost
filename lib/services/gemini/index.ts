@@ -196,7 +196,7 @@ export class GeminiService {
   }> {
     try {
       const rateLimitStatus = this.client.getRateLimitStatus()
-      const canMakeRequest = this.client.canMakeRequest()
+      const canMakeRequest = rateLimitStatus.requestsRemaining > 0
 
       return {
         healthy: canMakeRequest,

@@ -33,22 +33,12 @@ export class DescriptionAnalyzer {
 
     const prompt = this.createDescriptionAnalysisPrompt(listing)
 
-    const request = {
-      contents: [
-        {
-          role: 'user' as const,
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.2,
-        maxOutputTokens: 1536,
-      },
-    }
+    const response = await this.client.generateContent(prompt, {
+      temperature: 0.2,
+      maxOutputTokens: 1536,
+    })
 
-    const response = await this.client.generateContent(request)
-    const analysisResult =
-      this.client.parseJSONResponse<DescriptionAnalysis>(response)
+    const analysisResult = JSON.parse(response) as DescriptionAnalysis
 
     return analysisResult
   }

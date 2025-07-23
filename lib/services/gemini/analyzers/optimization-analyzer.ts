@@ -29,22 +29,14 @@ export class OptimizationAnalyzer {
 
     const prompt = this.createOptimizationPrompt(data)
 
-    const request = {
-      contents: [
-        {
-          role: 'user' as const,
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.3,
-        maxOutputTokens: 2048,
-      },
-    }
+    const response = await this.client.generateContent(prompt, {
+      temperature: 0.3,
+      maxOutputTokens: 2048,
+    })
 
-    const response = await this.client.generateContent(request)
-    const recommendations =
-      this.client.parseJSONResponse<OptimizationRecommendations[]>(response)
+    const recommendations = JSON.parse(
+      response
+    ) as OptimizationRecommendations[]
 
     return recommendations
   }

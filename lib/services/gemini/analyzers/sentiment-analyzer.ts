@@ -38,22 +38,12 @@ export class SentimentAnalyzer {
 
     const prompt = this.createSentimentAnalysisPrompt(reviews)
 
-    const request = {
-      contents: [
-        {
-          role: 'user' as const,
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.1, // Low temperature for consistent analysis
-        maxOutputTokens: 2048,
-      },
-    }
+    const response = await this.client.generateContent(prompt, {
+      temperature: 0.1, // Low temperature for consistent analysis
+      maxOutputTokens: 2048,
+    })
 
-    const response = await this.client.generateContent(request)
-    const analysisResult =
-      this.client.parseJSONResponse<ReviewSentimentAnalysis>(response)
+    const analysisResult = JSON.parse(response) as ReviewSentimentAnalysis
 
     return analysisResult
   }

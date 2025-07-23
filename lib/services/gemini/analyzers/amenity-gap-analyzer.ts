@@ -34,22 +34,12 @@ export class AmenityGapAnalyzer {
 
     const prompt = this.createAmenityGapAnalysisPrompt(listing, competitors)
 
-    const request = {
-      contents: [
-        {
-          role: 'user' as const,
-          parts: [{ text: prompt }],
-        },
-      ],
-      generationConfig: {
-        temperature: 0.1,
-        maxOutputTokens: 1536,
-      },
-    }
+    const response = await this.client.generateContent(prompt, {
+      temperature: 0.1,
+      maxOutputTokens: 1536,
+    })
 
-    const response = await this.client.generateContent(request)
-    const analysisResult =
-      this.client.parseJSONResponse<AmenityGapAnalysis>(response)
+    const analysisResult = JSON.parse(response) as AmenityGapAnalysis
 
     return analysisResult
   }

@@ -1,9 +1,9 @@
 /**
  * @file components/freemium/UnifiedAIAnalysisPanel.tsx
- * @description Unified AI Analysis Panel - Single entry point for all AI insights
+ * @description Unified AI Analysis Panel - Single entry point for all AI insights - refactored for CLAUDE.md compliance
  * @created 2025-07-23
  * @modified 2025-07-23
- * @todo Consolidates PersonalizedInsightsPanel + AI Insights Button for optimal UX
+ * @todo COMPLIANCE-001-08: Refactored using modular architecture
  */
 
 'use client'
@@ -13,6 +13,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import type { FreemiumAIInsights } from '@/lib/types/freemium-types'
 import { AIInsightsGrid } from './ui/AIInsightsGrid'
 import { MainUpgradeCTA } from './ui/MainUpgradeCTA'
+import { UnifiedAnalysisHeader } from './UnifiedAnalysisHeader'
+import { UnifiedAnalysisLoading } from './UnifiedAnalysisLoading'
+import { UnifiedAnalysisMetrics } from './UnifiedAnalysisMetrics'
 
 interface PersonalizedInsight {
   id: string
@@ -165,72 +168,11 @@ export function UnifiedAIAnalysisPanel({
 
       {/* Analysis Trigger */}
       {!analysisStarted && (
-        <div className="text-center py-12">
-          <div className="mb-6">
-            <div className="w-20 h-20 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
-              <span className="text-3xl">🧠</span>
-            </div>
-            <h3 className="text-xl font-bold text-slate-800 mb-2">
-              Vollständige KI-Analyse verfügbar
-            </h3>
-            <p className="text-slate-600 mb-4 max-w-md mx-auto">
-              Starten Sie eine umfassende Analyse mit personalisierter
-              DACH-Optimierung und detaillierten Verbesserungsvorschlägen
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 max-w-2xl mx-auto">
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-3 text-center border border-blue-200/50">
-                <div className="text-lg font-bold text-blue-600">🇩🇪</div>
-                <div className="text-xs text-slate-600">DACH-Markt</div>
-              </div>
-              <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl p-3 text-center border border-purple-200/50">
-                <div className="text-lg font-bold text-purple-600">🎯</div>
-                <div className="text-xs text-slate-600">Listing-Optim.</div>
-              </div>
-              <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl p-3 text-center border border-emerald-200/50">
-                <div className="text-lg font-bold text-emerald-600">🏆</div>
-                <div className="text-xs text-slate-600">Host-Analyse</div>
-              </div>
-              <div className="bg-gradient-to-r from-orange-50 to-red-50 rounded-xl p-3 text-center border border-orange-200/50">
-                <div className="text-lg font-bold text-orange-600">📊</div>
-                <div className="text-xs text-slate-600">Vollbericht</div>
-              </div>
-            </div>
-          </div>
-
-          <motion.button
-            onClick={startUnifiedAnalysis}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white font-bold py-4 px-10 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 text-lg"
-          >
-            🚀 KI-Komplettanalyse starten
-          </motion.button>
-        </div>
+        <UnifiedAnalysisHeader onStartAnalysis={startUnifiedAnalysis} />
       )}
 
       {/* Loading State */}
-      {isLoading && analysisStarted && (
-        <div className="text-center py-12">
-          <div className="flex items-center justify-center space-x-4 mb-6">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
-            <div
-              className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"
-              style={{ animationDelay: '0.3s' }}
-            ></div>
-            <div
-              className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-600"
-              style={{ animationDelay: '0.6s' }}
-            ></div>
-          </div>
-          <p className="text-slate-600 text-lg font-medium">
-            KI analysiert umfassend Ihre Listing-Daten...
-          </p>
-          <p className="text-slate-500 text-sm mt-2">
-            Personalisierte DACH-Empfehlungen und detaillierte
-            Optimierungsstrategien werden erstellt
-          </p>
-        </div>
-      )}
+      {isLoading && analysisStarted && <UnifiedAnalysisLoading />}
 
       {/* Results Display */}
       {hasResults && !isLoading && (
