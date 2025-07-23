@@ -18,6 +18,10 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --coverage --watchAll=false",
+    "worker": "tsx scripts/background-worker.ts",
+    "worker:dev": "tsx watch scripts/background-worker.ts",
+    "worker:stats": "tsx scripts/background-worker.ts --stats",
+    "validate:async": "tsx scripts/validate-async-system.ts",
     "prepare": "husky install 2>/dev/null || true"
   },
   "dependencies": {
@@ -61,6 +65,7 @@
     "jest-environment-jsdom": "^30.0.4",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.0.0"
   }
 }
