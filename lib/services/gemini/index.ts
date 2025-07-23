@@ -1,18 +1,32 @@
 /**
  * @file lib/services/gemini/index.ts
- * @description Main Gemini AI service orchestrator integrated with scoring system
+ * @description Main Gemini AI service orchestrator - refactored for CLAUDE.md compliance
  * @created 2025-07-21
- * @todo CORE-001-03: Complete Gemini integration with scoring system
+ * @modified 2025-07-23
+ * @todo COMPLIANCE-001-02: Refactored using modular architecture
  */
 
-import { env } from '@/lib/config'
 import { GeminiClient } from './client'
 import { GeminiAnalyzer } from './analyzer'
+import { SentimentAnalyzer, PricingAnalyzer } from './analyzer'
 import {
   GeminiServiceConfig,
   AnalysisInputData,
   GeminiAnalysisResult,
 } from './types'
+
+// Import utility modules
+import { transformScrapedDataToAIInput } from './utils/data-transformer'
+import {
+  calculateScoringEnhancements,
+  calculateSentimentBonus,
+  estimateApiCost,
+} from './utils/scoring-calculator'
+import {
+  createPrioritizedActionPlan,
+  createQuickActionPlan,
+} from './utils/action-planner'
+import { createServiceConfig } from './utils/config'
 
 /**
  * Enhanced analysis result that includes both AI insights and scoring
@@ -54,12 +68,16 @@ export interface EnhancedAnalysisResult {
  */
 export class GeminiService {
   private analyzer: GeminiAnalyzer
+  private sentimentAnalyzer: SentimentAnalyzer
+  private pricingAnalyzer: PricingAnalyzer
   private client: GeminiClient
   private config: GeminiServiceConfig
 
   constructor() {
-    this.config = this.createServiceConfig()
+    this.config = createServiceConfig()
     this.analyzer = new GeminiAnalyzer(this.config)
+    this.sentimentAnalyzer = new SentimentAnalyzer(this.config)
+    this.pricingAnalyzer = new PricingAnalyzer(this.config)
     this.client = new GeminiClient(this.config)
   }
 
@@ -84,10 +102,10 @@ export class GeminiService {
 
       // Step 2: Calculate scoring enhancements based on AI insights
       const integrationStartTime = Date.now()
-      const scoringEnhancements = this.calculateScoringEnhancements(aiAnalysis)
+      const scoringEnhancements = calculateScoringEnhancements(aiAnalysis)
 
       // Step 3: Create prioritized action plan
-      const prioritizedActions = this.createPrioritizedActionPlan(aiAnalysis)
+      const prioritizedActions = createPrioritizedActionPlan(aiAnalysis)
 
       const integrationTime = Date.now() - integrationStartTime
       const totalProcessingTime = Date.now() - totalStartTime
@@ -101,7 +119,7 @@ export class GeminiService {
           aiAnalysisTime,
           integrationTime,
           tokensUsed,
-          cost: this.estimateApiCost(tokensUsed),
+          cost: estimateApiCost(tokensUsed),
         },
       }
 
@@ -131,8 +149,8 @@ export class GeminiService {
     try {
       // Only perform the most critical analyses
       const [sentimentAnalysis, pricingRecommendation] = await Promise.all([
-        this.analyzer.analyzeSentiment(inputData.reviews),
-        this.analyzer.analyzePricing(
+        this.sentimentAnalyzer.analyzeSentiment(inputData.reviews),
+        this.pricingAnalyzer.analyzePricing(
           inputData.listing,
           inputData.competitors,
           inputData.marketContext
@@ -147,12 +165,12 @@ export class GeminiService {
           pricingRecommendation,
         } as any,
         scoringEnhancements: {
-          sentimentBonus: this.calculateSentimentBonus(sentimentAnalysis),
+          sentimentBonus: calculateSentimentBonus(sentimentAnalysis),
           descriptionBonus: 0,
           aiOptimizationPotential: 0,
           confidenceAdjustment: 0,
         },
-        prioritizedActions: this.createQuickActionPlan(
+        prioritizedActions: createQuickActionPlan(
           sentimentAnalysis,
           pricingRecommendation
         ),
@@ -196,250 +214,36 @@ export class GeminiService {
   /**
    * Transform scraped data to AI analysis input format
    */
-  static transformScrapedDataToAIInput(
-    listing: any,
-    reviews: any[] = [],
-    competitors: any[] = [],
-    marketContext?: any
-  ): AnalysisInputData {
-    return {
-      listing: {
-        title: listing.title || '',
-        description: listing.description || '',
-        amenities: listing.amenities || [],
-        price: listing.price_per_night || 0,
-        currency: listing.currency || 'EUR',
-        location: listing.location || '',
-        ratings: {
-          overall: listing.overall_rating || 0,
-          accuracy: listing.rating_accuracy,
-          cleanliness: listing.rating_cleanliness,
-          communication: listing.rating_communication,
-          location: listing.rating_location,
-          value: listing.rating_value,
-          checkin: listing.rating_checkin,
-        },
-        host: {
-          name: listing.host_name || '',
-          isSuperhost: listing.host_is_superhost || false,
-          responseRate: listing.host_response_rate,
-          responseTime: listing.host_response_time,
-          about: listing.host_about,
-        },
-      },
-      reviews: reviews.map((review) => ({
-        id: review.id || Math.random().toString(),
-        text: review.text || review.localizedText || '',
-        rating: review.rating,
-        language: review.language || 'de',
-        createdAt: review.createdAt || new Date().toISOString(),
-      })),
-      competitors: competitors.map((comp) => ({
-        title: comp.title || '',
-        price: comp.price || 0,
-        rating: comp.rating || 0,
-        amenities: comp.amenities || [],
-        propertyType: comp.propertyType,
-        isSuperhost: comp.isSuperhost || false,
-      })),
-      marketContext: marketContext || {
-        averagePrice:
-          competitors.length > 0
-            ? competitors.reduce((sum, c) => sum + (c.price || 0), 0) /
-              competitors.length
-            : 75,
-        averageRating:
-          competitors.length > 0
-            ? competitors.reduce((sum, c) => sum + (c.rating || 0), 0) /
-              competitors.length
-            : 4.5,
-        superhostPercentage:
-          competitors.length > 0
-            ? (competitors.filter((c) => c.isSuperhost).length /
-                competitors.length) *
-              100
-            : 30,
-        location: listing.location || '',
-      },
-    }
-  }
-
-  /**
-   * Calculate scoring enhancements based on AI analysis
-   */
-  private calculateScoringEnhancements(analysis: GeminiAnalysisResult) {
-    // Sentiment bonus: up to 50 points for excellent sentiment
-    const sentimentBonus = this.calculateSentimentBonus(
-      analysis.sentimentAnalysis
-    )
-
-    // Description bonus: up to 30 points for high-quality description
-    const descriptionBonus = Math.round(
-      (analysis.descriptionAnalysis.qualityScore / 100) * 30
-    )
-
-    // AI optimization potential: sum of all recommended improvements
-    const aiOptimizationPotential = analysis.optimizationRecommendations.reduce(
-      (sum, rec) => sum + rec.estimatedScoreImprovement,
-      0
-    )
-
-    // Confidence adjustment based on data quality
-    const avgDataQuality =
-      (analysis.analysisMetadata.dataQuality.reviewsQuality +
-        analysis.analysisMetadata.dataQuality.competitorDataQuality +
-        analysis.analysisMetadata.dataQuality.listingDataCompleteness) /
-      3
-    const confidenceAdjustment = Math.round((avgDataQuality / 100) * 20)
-
-    return {
-      sentimentBonus,
-      descriptionBonus,
-      aiOptimizationPotential,
-      confidenceAdjustment,
-    }
-  }
-
-  /**
-   * Calculate sentiment bonus for scoring system
-   */
-  private calculateSentimentBonus(sentimentAnalysis: any) {
-    const sentiment = sentimentAnalysis.aggregatedSentiment
-    const positiveWeight = sentiment.positiveScore * sentiment.confidence
-    return Math.round(positiveWeight * 50) // Max 50 bonus points
-  }
-
-  /**
-   * Create prioritized action plan
-   */
-  private createPrioritizedActionPlan(analysis: GeminiAnalysisResult) {
-    const actions: Array<any> = []
-
-    // Add actions from optimization recommendations
-    analysis.optimizationRecommendations.forEach((rec) => {
-      rec.recommendations.forEach((action) => {
-        actions.push({
-          priority: rec.priority,
-          category: rec.category,
-          action: action.action,
-          estimatedImpact:
-            action.impact === 'high'
-              ? 40
-              : action.impact === 'medium'
-                ? 25
-                : 10,
-          effort: action.effort,
-          timeline: action.timeline,
-        })
-      })
-    })
-
-    // Add pricing actions if significant opportunity
-    if (analysis.pricingRecommendation.confidenceLevel > 70) {
-      const currentPrice = 0 // Will be filled with actual current price
-      const suggestedPrice = analysis.pricingRecommendation.suggestedPrice
-      const priceGap = Math.abs(suggestedPrice - currentPrice) / currentPrice
-
-      if (priceGap > 0.1) {
-        // 10% difference
-        actions.push({
-          priority: 'high' as const,
-          category: 'pricing',
-          action: `Preis auf ${suggestedPrice}€ anpassen`,
-          estimatedImpact: Math.round(priceGap * 100),
-          effort: 'low' as const,
-          timeline: 'Sofort umsetzbar',
-        })
-      }
-    }
-
-    // Sort by priority and estimated impact
-    return actions
-      .sort((a, b) => {
-        const priorityWeight = { critical: 4, high: 3, medium: 2, low: 1 }
-        const aPriority =
-          priorityWeight[a.priority as keyof typeof priorityWeight] || 1
-        const bPriority =
-          priorityWeight[b.priority as keyof typeof priorityWeight] || 1
-
-        if (aPriority !== bPriority) return bPriority - aPriority
-        return b.estimatedImpact - a.estimatedImpact
-      })
-      .slice(0, 10) // Top 10 actions
-  }
-
-  /**
-   * Create quick action plan for fast analysis
-   */
-  private createQuickActionPlan(
-    sentimentAnalysis: any,
-    pricingRecommendation: any
-  ) {
-    const actions: Array<any> = []
-
-    // Quick sentiment-based action
-    if (sentimentAnalysis.aggregatedSentiment.overallSentiment === 'negative') {
-      actions.push({
-        priority: 'high',
-        category: 'reviews',
-        action: 'Negative Bewertungsthemen adressieren',
-        estimatedImpact: 30,
-        effort: 'medium',
-        timeline: '1-2 Wochen',
-      })
-    }
-
-    // Quick pricing action
-    if (pricingRecommendation.confidenceLevel > 80) {
-      actions.push({
-        priority: 'medium',
-        category: 'pricing',
-        action: `Preisanpassung auf ${pricingRecommendation.suggestedPrice}€`,
-        estimatedImpact: 20,
-        effort: 'low',
-        timeline: 'Sofort',
-      })
-    }
-
-    return actions
-  }
-
-  /**
-   * Create service configuration
-   */
-  private createServiceConfig(): GeminiServiceConfig {
-    return {
-      apiKey: env.GOOGLE_GEMINI_API_KEY,
-      model: 'gemini-1.5-flash', // Cost-optimized model
-      region: 'eu',
-      timeout: 30000, // 30 seconds
-      maxRetries: 3,
-      rateLimitPerMinute: 15, // Conservative limit
-      enableSafetyFilters: false, // Business analysis doesn't need strict filtering
-      defaultTemperature: 0.1,
-      defaultMaxTokens: 1024,
-    }
-  }
-
-  /**
-   * Estimate API cost in EUR
-   */
-  private estimateApiCost(tokensUsed: number): number {
-    // Gemini 1.5 Flash pricing: approximately €0.000375 per 1K input tokens
-    // Output tokens cost more but we estimate conservatively
-    const costPerToken = 0.000000375
-    return Math.round(tokensUsed * costPerToken * 100) / 100 // Round to 2 decimal places
-  }
+  static transformScrapedDataToAIInput = transformScrapedDataToAIInput
 }
 
 /**
- * Export singleton service instance
+ * Singleton instance for backward compatibility
  */
 export const geminiService = new GeminiService()
 
 /**
- * Re-export types and components for external use
+ * Default export for main service
  */
-export * from './types'
-export * from './analyzer'
-export * from './client'
+export default GeminiService
+
+/**
+ * Re-export utility functions for external use
+ */
+export {
+  transformScrapedDataToAIInput,
+  calculateScoringEnhancements,
+  calculateSentimentBonus,
+  createPrioritizedActionPlan,
+  createQuickActionPlan,
+  estimateApiCost,
+}
+
+/**
+ * Re-export types
+ */
+export type {
+  GeminiServiceConfig,
+  AnalysisInputData,
+  GeminiAnalysisResult,
+} from './types'
