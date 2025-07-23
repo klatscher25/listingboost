@@ -80,6 +80,35 @@ export async function POST(request: NextRequest) {
 
     console.log('[AsyncAnalyzeAPI] ✅ Analysis job created:', job.id)
 
+    // Trigger background worker to process the job
+    try {
+      const workerAuthToken =
+        process.env.WORKER_AUTH_TOKEN || 'dev-worker-token'
+
+      fetch(
+        `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/api/worker/process-jobs`,
+        {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${workerAuthToken}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      ).catch((error) => {
+        console.log(
+          '[AsyncAnalyzeAPI] Worker trigger failed (non-blocking):',
+          error
+        )
+      })
+
+      console.log('[AsyncAnalyzeAPI] 🚀 Background worker triggered')
+    } catch (error) {
+      console.log(
+        '[AsyncAnalyzeAPI] Worker trigger error (non-blocking):',
+        error
+      )
+    }
+
     const response: JobCreateResponse = {
       jobId: job.id,
       estimatedTimeSeconds: 60, // Average analysis time
@@ -93,6 +122,7 @@ export async function POST(request: NextRequest) {
       meta: {
         timestamp: new Date().toISOString(),
         estimatedCompletion: new Date(Date.now() + 60000).toISOString(),
+        workerTriggered: true,
       },
     })
   } catch (error) {
