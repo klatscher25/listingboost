@@ -666,7 +666,7 @@ subscription_id: UUID, Referenz zu subscriptions, SET NULL
 
 Usage-Daten:
 
-resource_type: Text, NICHT NULL ("listing_analysis", "api_call", "export", "competitor_check")
+resource_type: Text, NICHT NULL ("listing_analysis", "api_call", "dashboard_refresh", "competitor_check")
 count: Integer, Standard 1 (Anzahl der Nutzungen)
 date: Date, Standard heute
 
@@ -815,7 +815,7 @@ Nutzungslimits:
 
 max_listings: Integer (maximale Anzahl Listings)
 max_api_calls_per_month: Integer (API-Limit für Pro-Plan)
-max_exports_per_month: Integer (PDF/Excel-Export-Limit)
+max_dashboard_refreshes_per_month: Integer (Dashboard Refresh-Limit)
 
 Feature-Set:
 

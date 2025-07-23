@@ -17,7 +17,6 @@ import { ANALYZE_UI } from '@/lib/theme/analyze-constants'
 import { ScoreOverview } from './ScoreOverview'
 import { CategoryBreakdown } from './CategoryBreakdown'
 import { RecommendationsList } from './RecommendationsList'
-import { ExportActions } from './ExportActions'
 import type { AnalysisResult, ResultsDisplayProps } from './shared-types'
 
 interface ResultsDashboardProps {
@@ -79,7 +78,7 @@ export function ResultsDashboard({
               )}
             </p>
           </div>
-          <ExportActions results={results} />
+          {/* Share functionality can be added here if needed */}
         </div>
       </div>
 

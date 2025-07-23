@@ -1,5 +1,5 @@
 /**
- * @file lib/theme/analyze-constants.ts  
+ * @file lib/theme/analyze-constants.ts
  * @description German UI constants for listing analysis interface
  * @created 2025-07-21
  * @todo FRONTEND-001-01: German localization for analysis workflow
@@ -7,7 +7,7 @@
 
 /**
  * 🇩🇪 GERMAN UI CONSTANTS - ANALYSIS INTERFACE
- * 
+ *
  * Professional German text for DACH market
  * Optimized for business B2B context
  * Layout-tested for German text expansion (30% longer)
@@ -17,16 +17,18 @@ export const ANALYZE_UI = {
   // 🏠 Page Headers & Navigation
   page: {
     title: 'Listing-Analyse',
-    subtitle: 'Analysieren Sie Ihre Airbnb-Unterkunft und erhalten Sie detaillierte Insights zur Optimierung Ihrer Vermietung',
+    subtitle:
+      'Analysieren Sie Ihre Airbnb-Unterkunft und erhalten Sie detaillierte Insights zur Optimierung Ihrer Vermietung',
     breadcrumb: {
       dashboard: 'Dashboard',
       analyze: 'Analyse',
-      results: 'Ergebnisse'
+      results: 'Ergebnisse',
     },
     meta: {
       title: 'Airbnb Listing Analyse - ListingBoost Pro',
-      description: 'Professionelle Analyse Ihrer Airbnb-Unterkunft mit KI-gestützten Empfehlungen'
-    }
+      description:
+        'Professionelle Analyse Ihrer Airbnb-Unterkunft mit KI-gestützten Empfehlungen',
+    },
   },
 
   // 📝 Form Interface
@@ -34,21 +36,24 @@ export const ANALYZE_UI = {
     // Main form
     header: {
       title: 'Neue Analyse starten',
-      subtitle: 'Geben Sie die URL Ihres Airbnb-Listings ein, um eine umfassende Analyse zu erhalten'
+      subtitle:
+        'Geben Sie die URL Ihres Airbnb-Listings ein, um eine umfassende Analyse zu erhalten',
     },
-    
+
     // URL Input
     url: {
       label: 'Airbnb-URL',
       placeholder: 'https://airbnb.com/rooms/123456',
-      placeholderLong: 'Airbnb-URL eingeben (z.B. https://airbnb.com/rooms/123456)',
-      helper: 'Unterstützte Domains: airbnb.com, airbnb.de, airbnb.fr, airbnb.it, airbnb.es',
+      placeholderLong:
+        'Airbnb-URL eingeben (z.B. https://airbnb.com/rooms/123456)',
+      helper:
+        'Unterstützte Domains: airbnb.com, airbnb.de, airbnb.fr, airbnb.it, airbnb.es',
       required: 'Airbnb-URL ist erforderlich',
       invalid: 'Bitte geben Sie eine gültige Airbnb-URL ein',
       validating: 'URL wird überprüft...',
-      valid: 'Gültige Airbnb-URL erkannt'
+      valid: 'Gültige Airbnb-URL erkannt',
     },
-    
+
     // Analysis Type Selection
     analysisType: {
       label: 'Analyse-Typ auswählen',
@@ -58,36 +63,37 @@ export const ANALYZE_UI = {
         description: 'Grundlegende Bewertung mit wichtigsten Kennzahlen',
         features: [
           'Listing-Grunddaten',
-          'Preis-Bewertung', 
+          'Preis-Bewertung',
           'Basis-Empfehlungen',
-          'Bewertungsübersicht'
-        ]
+          'Bewertungsübersicht',
+        ],
       },
       comprehensive: {
-        title: 'Umfassende Analyse', 
+        title: 'Umfassende Analyse',
         duration: '90 Sekunden',
-        description: 'Detaillierte KI-Analyse mit Marktvergleich und Handlungsempfehlungen',
+        description:
+          'Detaillierte KI-Analyse mit Marktvergleich und Handlungsempfehlungen',
         features: [
           'Komplette Listing-Analyse',
           'KI-gestützte Bewertungsanalyse',
           'Marktvergleich und Wettbewerb',
           'Detaillierte Handlungsempfehlungen',
           'SEO-Optimierungsvorschläge',
-          'Preisoptimierung'
+          'Preisoptimierung',
         ],
-        recommended: 'Empfohlen'
-      }
+        recommended: 'Empfohlen',
+      },
     },
-    
+
     // Actions
     actions: {
       startAnalysis: 'Analyse starten',
       startQuick: 'Schnelle Analyse starten',
-      startComprehensive: 'Umfassende Analyse starten', 
+      startComprehensive: 'Umfassende Analyse starten',
       cancel: 'Abbrechen',
       retry: 'Erneut versuchen',
-      reset: 'Zurücksetzen'
-    }
+      reset: 'Zurücksetzen',
+    },
   },
 
   // ⏳ Analysis Progress
@@ -95,45 +101,45 @@ export const ANALYZE_UI = {
     header: {
       title: 'Analyse läuft...',
       subtitle: 'Bitte warten Sie, während wir Ihr Listing analysieren',
-      timeRemaining: 'Verbleibende Zeit: {time}'
+      timeRemaining: 'Verbleibende Zeit: {time}',
     },
-    
+
     // Progress Steps
     steps: {
       initialization: {
         title: 'Initialisierung',
-        description: 'Analyse wird vorbereitet...'
+        description: 'Analyse wird vorbereitet...',
       },
       dataFetching: {
         title: 'Daten abrufen',
-        description: 'Listing-Daten werden von Airbnb abgerufen...'
+        description: 'Listing-Daten werden von Airbnb abgerufen...',
       },
       processing: {
         title: 'Datenverarbeitung',
-        description: 'Listing-Informationen werden verarbeitet...'
+        description: 'Listing-Informationen werden verarbeitet...',
       },
       reviewAnalysis: {
         title: 'Bewertungsanalyse',
-        description: 'Gästebewertungen werden mit KI analysiert...'
+        description: 'Gästebewertungen werden mit KI analysiert...',
       },
       marketComparison: {
         title: 'Marktvergleich',
-        description: 'Vergleichbare Unterkünfte werden analysiert...'
+        description: 'Vergleichbare Unterkünfte werden analysiert...',
       },
       aiInsights: {
         title: 'KI-Empfehlungen',
-        description: 'Personalisierte Empfehlungen werden generiert...'
+        description: 'Personalisierte Empfehlungen werden generiert...',
       },
       finalizing: {
         title: 'Abschluss',
-        description: 'Ergebnisse werden zusammengestellt...'
+        description: 'Ergebnisse werden zusammengestellt...',
       },
       completed: {
         title: 'Analyse abgeschlossen',
-        description: 'Ihre Ergebnisse sind bereit!'
-      }
+        description: 'Ihre Ergebnisse sind bereit!',
+      },
     },
-    
+
     // Status Messages
     status: {
       connecting: 'Verbindung wird hergestellt...',
@@ -142,25 +148,25 @@ export const ANALYZE_UI = {
       generating: 'Wird generiert...',
       completing: 'Wird abgeschlossen...',
       success: 'Erfolgreich abgeschlossen!',
-      almostDone: 'Fast fertig...'
-    }
+      almostDone: 'Fast fertig...',
+    },
   },
 
-  // 📊 Results Interface  
+  // 📊 Results Interface
   results: {
     header: {
       title: 'Analyse-Ergebnisse',
       subtitle: 'Detaillierte Insights für Ihr Airbnb-Listing',
       lastUpdated: 'Zuletzt aktualisiert: {date}',
       analysisDate: 'Analysiert am {date}',
-      viewFullReport: 'Vollständigen Bericht anzeigen'
+      viewFullReport: 'Vollständigen Bericht anzeigen',
     },
-    
+
     // Score Display
     score: {
       overall: 'Gesamtbewertung',
       outOf: 'von {max} Punkten',
-      excellent: 'Hervorragend', 
+      excellent: 'Hervorragend',
       good: 'Gut',
       fair: 'Befriedigend',
       poor: 'Verbesserungsbedürftig',
@@ -170,40 +176,37 @@ export const ANALYZE_UI = {
         pricing: 'Preisgestaltung',
         amenities: 'Ausstattung',
         location: 'Lage & Erreichbarkeit',
-        reviews: 'Bewertungen & Service'
-      }
+        reviews: 'Bewertungen & Service',
+      },
     },
-    
+
     // Action Items
     recommendations: {
       title: 'Handlungsempfehlungen',
       subtitle: 'Prioritäten zur Optimierung Ihres Listings',
       priority: {
         high: 'Hohe Priorität',
-        medium: 'Mittlere Priorität', 
-        low: 'Niedrige Priorität'
+        medium: 'Mittlere Priorität',
+        low: 'Niedrige Priorität',
       },
       impact: {
         high: 'Hoher Einfluss',
         medium: 'Mittlerer Einfluss',
-        low: 'Geringer Einfluss'
+        low: 'Geringer Einfluss',
       },
       effort: {
         low: 'Geringer Aufwand',
         medium: 'Mittlerer Aufwand',
-        high: 'Hoher Aufwand'
-      }
+        high: 'Hoher Aufwand',
+      },
     },
-    
-    // Export Options
-    export: {
-      title: 'Ergebnisse exportieren',
-      pdf: 'Als PDF herunterladen',
-      excel: 'Als Excel exportieren',
-      csv: 'Als CSV exportieren',
-      share: 'Link teilen',
-      email: 'Per E-Mail versenden'
-    }
+
+    // Sharing Options
+    share: {
+      title: 'Ergebnisse teilen',
+      link: 'Link teilen',
+      email: 'Per E-Mail versenden',
+    },
   },
 
   // ⚠️ Error Handling
@@ -211,11 +214,12 @@ export const ANALYZE_UI = {
     // General Errors
     general: {
       title: 'Ein Fehler ist aufgetreten',
-      subtitle: 'Bitte versuchen Sie es erneut oder kontaktieren Sie den Support',
+      subtitle:
+        'Bitte versuchen Sie es erneut oder kontaktieren Sie den Support',
       retry: 'Erneut versuchen',
-      contact: 'Support kontaktieren'
+      contact: 'Support kontaktieren',
     },
-    
+
     // URL Errors
     url: {
       required: 'Bitte geben Sie eine Airbnb-URL ein',
@@ -223,44 +227,50 @@ export const ANALYZE_UI = {
       notAirbnb: 'Bitte geben Sie eine gültige Airbnb-URL ein',
       notFound: 'Das Listing konnte nicht gefunden werden',
       private: 'Dieses Listing ist privat und kann nicht analysiert werden',
-      blocked: 'Zugriff auf dieses Listing ist gesperrt'
+      blocked: 'Zugriff auf dieses Listing ist gesperrt',
     },
-    
+
     // Analysis Errors
     analysis: {
-      timeout: 'Die Analyse dauert zu lange. Bitte versuchen Sie es mit der schnellen Analyse.',
-      serverError: 'Server-Fehler bei der Analyse. Bitte versuchen Sie es später erneut.',
+      timeout:
+        'Die Analyse dauert zu lange. Bitte versuchen Sie es mit der schnellen Analyse.',
+      serverError:
+        'Server-Fehler bei der Analyse. Bitte versuchen Sie es später erneut.',
       rateLimited: 'Zu viele Anfragen. Bitte warten Sie {minutes} Minuten.',
       dataError: 'Fehler beim Abrufen der Listing-Daten',
       processingError: 'Fehler bei der Datenverarbeitung',
-      aiError: 'KI-Analyse konnte nicht abgeschlossen werden'
+      aiError: 'KI-Analyse konnte nicht abgeschlossen werden',
     },
-    
+
     // Network Errors
     network: {
-      offline: 'Sie sind offline. Bitte überprüfen Sie Ihre Internetverbindung.',
+      offline:
+        'Sie sind offline. Bitte überprüfen Sie Ihre Internetverbindung.',
       timeout: 'Verbindungszeit überschritten. Bitte versuchen Sie es erneut.',
-      serverUnavailable: 'Service ist vorübergehend nicht verfügbar'
-    }
+      serverUnavailable: 'Service ist vorübergehend nicht verfügbar',
+    },
   },
 
   // 💡 Feature Overview
   features: {
     quick: {
       title: 'Schnelle Analyse',
-      description: 'Erhalten Sie in wenigen Sekunden grundlegende Insights zu Ihrem Listing',
-      icon: '⚡'
+      description:
+        'Erhalten Sie in wenigen Sekunden grundlegende Insights zu Ihrem Listing',
+      icon: '⚡',
     },
     comprehensive: {
-      title: 'Umfassende Bewertung', 
-      description: 'Detaillierte Analyse mit KI-gestützten Empfehlungen und Marktvergleich',
-      icon: '📊'
+      title: 'Umfassende Bewertung',
+      description:
+        'Detaillierte Analyse mit KI-gestützten Empfehlungen und Marktvergleich',
+      icon: '📊',
     },
     recommendations: {
       title: 'Handlungsempfehlungen',
-      description: 'Konkrete Tipps zur Optimierung Ihres Listings und Steigerung der Buchungen',
-      icon: '💡'
-    }
+      description:
+        'Konkrete Tipps zur Optimierung Ihres Listings und Steigerung der Buchungen',
+      icon: '💡',
+    },
   },
 
   // 🎯 Call-to-Actions
@@ -271,21 +281,21 @@ export const ANALYZE_UI = {
     downloadReport: 'Bericht herunterladen',
     shareResults: 'Ergebnisse teilen',
     upgradeAccount: 'Account upgraden',
-    contactSupport: 'Support kontaktieren'
+    contactSupport: 'Support kontaktieren',
   },
 
   // 📱 Mobile-Specific
   mobile: {
     navigation: {
       back: 'Zurück',
-      menu: 'Menü', 
-      close: 'Schließen'
+      menu: 'Menü',
+      close: 'Schließen',
     },
     actions: {
       tapToStart: 'Tippen zum Starten',
       swipeUp: 'Nach oben wischen',
-      pullRefresh: 'Zum Aktualisieren ziehen'
-    }
+      pullRefresh: 'Zum Aktualisieren ziehen',
+    },
   },
 
   // ⌨️ Keyboard Shortcuts (for power users)
@@ -293,8 +303,8 @@ export const ANALYZE_UI = {
     startAnalysis: 'Strg + Enter',
     focusUrl: 'Strg + L',
     retry: 'Strg + R',
-    export: 'Strg + E'
-  }
+    share: 'Strg + S',
+  },
 } as const
 
 /**
@@ -305,7 +315,7 @@ export const ANALYZE_UI = {
 export function formatTimeRemaining(seconds: number): string {
   const minutes = Math.floor(seconds / 60)
   const remainingSeconds = seconds % 60
-  
+
   if (minutes > 0) {
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')} Min`
   }

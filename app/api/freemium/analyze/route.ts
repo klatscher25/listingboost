@@ -17,6 +17,7 @@ import {
   analyzeListingData,
   generateRecommendations,
 } from '@/lib/services/freemium/analysis'
+import { diagnostic } from '@/lib/utils/diagnostic-logger'
 import type {
   FreemiumAnalysisData,
   FreemiumAnalysisResult,
@@ -63,23 +64,20 @@ export async function POST(request: NextRequest) {
     let listing: AirbnbListingData | EnhancedFakeData | null = null
     let isRealData = false
 
-    // ENHANCED DIAGNOSTICS: Attempt real scraping with detailed logging
-    console.log('[DIAGNOSTIC] ========== APIFY SCRAPING DIAGNOSTICS ==========')
-    console.log(
-      '[DIAGNOSTIC] APIFY_API_TOKEN present:',
-      !!process.env.APIFY_API_TOKEN
-    )
-    console.log(
-      '[DIAGNOSTIC] APIFY_API_TOKEN value (first 15 chars):',
+    // Enhanced diagnostics for development debugging
+    diagnostic.section('APIFY SCRAPING DIAGNOSTICS')
+    diagnostic.log('APIFY_API_TOKEN present:', !!process.env.APIFY_API_TOKEN)
+    diagnostic.log(
+      'APIFY_API_TOKEN value (first 15 chars):',
       process.env.APIFY_API_TOKEN?.substring(0, 15)
     )
-    console.log(
-      '[DIAGNOSTIC] APIFY_API_TOKEN is not placeholder:',
+    diagnostic.log(
+      'APIFY_API_TOKEN is not placeholder:',
       process.env.APIFY_API_TOKEN !== 'placeholder_apify_token'
     )
-    console.log('[DIAGNOSTIC] Target URL:', url)
-    console.log(
-      '[DIAGNOSTIC] URL Regex Test:',
+    diagnostic.log('Target URL:', url)
+    diagnostic.log(
+      'URL Regex Test:',
       /^https?:\/\/(www\.)?(airbnb\.(com|de|fr|it|es|at|ch))\/rooms\/\d+/.test(
         url
       )
@@ -90,18 +88,15 @@ export async function POST(request: NextRequest) {
       process.env.APIFY_API_TOKEN !== 'placeholder_apify_token'
     ) {
       try {
-        console.log('[DIAGNOSTIC] Starting real scraping process...')
-        console.log(
-          '[DIAGNOSTIC] Actor ID:',
-          process.env.APIFY_ACTOR_URL_SCRAPER
-        )
+        diagnostic.log('Starting real scraping process...')
+        diagnostic.log('Actor ID:', process.env.APIFY_ACTOR_URL_SCRAPER)
         logInfo('[FreemiumAPI] Attempting real scraping with URL scraper')
 
         const startTime = Date.now()
         const scraper = new AirbnbUrlScraper()
 
-        console.log(
-          '[DIAGNOSTIC] Scraper created, calling scrape method with 60s timeout...'
+        diagnostic.log(
+          'Scraper created, calling scrape method with 60s timeout...'
         )
 
         // INCREASED TIMEOUT to 60 seconds for better success rate
@@ -114,11 +109,9 @@ export async function POST(request: NextRequest) {
         )
 
         const scrapingTime = Date.now() - startTime
-        console.log(
-          '[DIAGNOSTIC] ✅ SCRAPING SUCCESS! Time taken:',
-          scrapingTime + 'ms'
-        )
-        console.log('[DIAGNOSTIC] Scraped listing data:', {
+        diagnostic.success('SCRAPING SUCCESS!')
+        diagnostic.timing('Time taken:', scrapingTime)
+        diagnostic.data('Scraped listing data:', {
           id: listing?.id,
           title: listing?.title?.substring(0, 50),
           hasImages: !!listing?.images?.length,
@@ -133,14 +126,14 @@ export async function POST(request: NextRequest) {
       } catch (error) {
         const errorTime = Date.now()
         const err = error as Error
-        console.log(
-          '[DIAGNOSTIC] ❌ SCRAPING FAILED after',
+        diagnostic.error(
+          'SCRAPING FAILED after',
           errorTime - (Date.now() - 60000) + 'ms'
         )
-        console.log('[DIAGNOSTIC] Error type:', err?.name || 'Unknown')
-        console.log('[DIAGNOSTIC] Error message:', err?.message || 'No message')
-        console.log(
-          '[DIAGNOSTIC] Full error object:',
+        diagnostic.error('Error type:', err?.name || 'Unknown')
+        diagnostic.error('Error message:', err?.message || 'No message')
+        diagnostic.data(
+          'Full error object:',
           JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
         )
 
@@ -149,8 +142,9 @@ export async function POST(request: NextRequest) {
           err?.message?.includes('timeout') ||
           err?.message?.includes('Timeout')
         ) {
-          console.log(
-            '[DIAGNOSTIC] 🕐 TIMEOUT DETECTED - Actor took longer than 60 seconds'
+          diagnostic.timing(
+            'TIMEOUT DETECTED - Actor took longer than 60 seconds',
+            60000
           )
         }
 
@@ -159,9 +153,7 @@ export async function POST(request: NextRequest) {
           err?.message?.includes('Actor') ||
           err?.message?.includes('actor')
         ) {
-          console.log(
-            '[DIAGNOSTIC] 🎭 ACTOR ERROR - Possible actor availability issue'
-          )
+          diagnostic.warn('ACTOR ERROR - Possible actor availability issue')
         }
 
         logApiError(
@@ -171,12 +163,11 @@ export async function POST(request: NextRequest) {
         listing = null
       }
     } else {
-      console.log(
-        '[DIAGNOSTIC] ❌ Skipping real scraping - no valid token or placeholder token'
+      diagnostic.warn(
+        'Skipping real scraping - no valid token or placeholder token'
       )
     }
-    console.log('[DIAGNOSTIC] ========== END DIAGNOSTICS ==========')
-    console.log('')
+    diagnostic.end()
 
     // Fallback to enhanced fake data
     if (!listing) {

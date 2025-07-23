@@ -299,7 +299,7 @@ Response: {
       limits: {
         max_listings: number;
         max_api_calls: number;
-        max_exports: number;
+        max_dashboard_refreshes: number;
       };
     }[];
   }
@@ -340,12 +340,12 @@ Response: {
     usage: {
       listings_used: number;
       api_calls_used: number;
-      exports_used: number;
+      dashboard_refreshes_used: number;
     };
     limits: {
       max_listings: number;
       max_api_calls: number;
-      max_exports: number;
+      max_dashboard_refreshes: number;
     };
   }
 }
@@ -435,38 +435,22 @@ Response: {
 
 ---
 
-## 📤 **Export & Integration**
+## 🔗 **Integration & Automation**
 
-### **GET /api/v1/listings/{listing_id}/export**
+### **GET /api/v1/listings/{listing_id}/data**
 ```typescript
-// Export Listing Analysis
+// Get Listing Analysis Data for API Integration
 Query: {
-  format: 'pdf' | 'excel' | 'json';
+  format: 'json';
   include_images?: boolean;
   include_recommendations?: boolean;
 }
 Response: {
   success: true;
   data: {
-    download_url: string;   // Temporary download link
-    expires_at: string;
-  }
-}
-```
-
-### **GET /api/v1/exports/history**
-```typescript
-// Export History
-Response: {
-  success: true;
-  data: {
-    exports: {
-      id: string;
-      listing_title: string;
-      format: string;
-      created_at: string;
-      download_url?: string; // If still available
-    }[];
+    listing: ListingData;
+    analysis: AnalysisResults;
+    recommendations?: RecommendationData;
   }
 }
 ```

@@ -177,20 +177,20 @@ Tasks:
   - C003-03: Score Visualization Components
   - C003-04: Analytics Charts & Metrics
   - C003-05: Real-time Updates (WebSocket)
-  - C003-06: Export Functionality (PDF/Excel)
+  - C003-06: Advanced Dashboard Features
   - C003-07: Mobile-Responsive Dashboard
 
 Deliverables:
   - ✅ Complete Dashboard Interface
   - ✅ Data Visualization
   - ✅ Real-time Updates
-  - ✅ Export Features
+  - ✅ Interactive Dashboard Features
 
 Validation:
   - Dashboard lädt unter 2s
   - Charts visualisieren Daten korrekt
   - Real-time Updates funktionieren
-  - Exports sind formatted korrekt
+  - Interactive features funktionieren korrekt
 ```
 
 ### **CORE-004: Listing Analysis Workflow**

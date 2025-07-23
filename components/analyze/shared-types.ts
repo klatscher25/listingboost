@@ -1,7 +1,7 @@
 /**
  * @file components/analyze/shared-types.ts
  * @description TypeScript interfaces for modern analysis components
- * @created 2025-07-21  
+ * @created 2025-07-21
  * @todo FRONTEND-001-01: Type-safe analysis interface architecture
  */
 
@@ -21,7 +21,12 @@ export type ResponsiveSize = keyof typeof MODERN_DESIGN.responsive.container
 
 // Component size system
 export type ComponentSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
-export type ComponentState = 'default' | 'loading' | 'success' | 'error' | 'disabled'
+export type ComponentState =
+  | 'default'
+  | 'loading'
+  | 'success'
+  | 'error'
+  | 'disabled'
 
 /**
  * 📝 ANALYSIS WORKFLOW TYPES
@@ -29,7 +34,12 @@ export type ComponentState = 'default' | 'loading' | 'success' | 'error' | 'disa
 
 // Analysis types
 export type AnalysisType = 'quick' | 'comprehensive'
-export type AnalysisStatus = 'idle' | 'validating' | 'analyzing' | 'completed' | 'error'
+export type AnalysisStatus =
+  | 'idle'
+  | 'validating'
+  | 'analyzing'
+  | 'completed'
+  | 'error'
 
 // Progress tracking
 export type ProgressStep = keyof typeof ANALYZE_UI.progress.steps
@@ -79,7 +89,7 @@ export interface AnalysisResponse {
 }
 
 /**
- * 📊 ANALYSIS RESULTS TYPES  
+ * 📊 ANALYSIS RESULTS TYPES
  */
 
 // Overall score system
@@ -100,7 +110,13 @@ export interface Recommendation {
   id: string
   title: string
   description: string
-  category: 'photos' | 'description' | 'pricing' | 'amenities' | 'location' | 'reviews'
+  category:
+    | 'photos'
+    | 'description'
+    | 'pricing'
+    | 'amenities'
+    | 'location'
+    | 'reviews'
   priority: 'high' | 'medium' | 'low'
   impact: 'high' | 'medium' | 'low'
   effort: 'low' | 'medium' | 'high'
@@ -198,8 +214,8 @@ export interface ProgressIndicatorProps extends BaseComponentProps {
 export interface ResultsDisplayProps extends BaseComponentProps {
   results: AnalysisResult
   variant?: 'compact' | 'detailed'
-  showExport?: boolean
-  onExport?: (format: 'pdf' | 'excel' | 'csv') => void
+  showShare?: boolean
+  onShare?: (options: ShareOptions) => void
 }
 
 // Error Display props
@@ -214,7 +230,7 @@ export interface ErrorDisplayProps extends BaseComponentProps {
   size?: ComponentSize
 }
 
-// Main Form props  
+// Main Form props
 export interface AnalyzeFormProps extends BaseComponentProps {
   userId: string
   onAnalysisStart?: (request: AnalysisRequest) => void
@@ -247,7 +263,9 @@ export interface UseAnalysisActions {
 }
 
 // Complete analysis hook return
-export interface UseAnalysisReturn extends UseAnalysisState, UseAnalysisActions {}
+export interface UseAnalysisReturn
+  extends UseAnalysisState,
+    UseAnalysisActions {}
 
 // URL validation hook
 export interface UseURLValidation {
@@ -281,10 +299,10 @@ export interface AccessibilityProps {
 }
 
 // Complete component props with responsive and a11y
-export interface CompleteComponentProps 
-  extends BaseComponentProps, 
-          Partial<ResponsiveProps>, 
-          Partial<AccessibilityProps> {
+export interface CompleteComponentProps
+  extends BaseComponentProps,
+    Partial<ResponsiveProps>,
+    Partial<AccessibilityProps> {
   variant?: string
   size?: ComponentSize
   state?: ComponentState
@@ -325,22 +343,12 @@ export interface AnimationConfig {
 export type TransitionState = 'entering' | 'entered' | 'exiting' | 'exited'
 
 /**
- * 📊 EXPORT & SHARING TYPES
+ * 📊 SHARING TYPES
  */
-
-// Export options
-export type ExportFormat = 'pdf' | 'excel' | 'csv' | 'json'
-export interface ExportRequest {
-  format: ExportFormat
-  results: AnalysisResult
-  includeCharts?: boolean
-  includeRecommendations?: boolean
-}
 
 // Sharing options
 export interface ShareOptions {
-  method: 'link' | 'email' | 'download'
-  format?: ExportFormat
+  method: 'link' | 'email'
   recipientEmail?: string
   message?: string
 }
@@ -350,7 +358,7 @@ export interface ShareOptions {
  */
 export type {
   Optional,
-  RequiredProps, 
+  RequiredProps,
   PropsOf,
   BrandedId,
   UserId,
@@ -358,7 +366,7 @@ export type {
   AnalysisId,
   APIResponse,
   NetworkStatus,
-  LoadingState
+  LoadingState,
 } from '@/lib/types/utility-types'
 
 // Export all types for easy importing
@@ -368,7 +376,7 @@ export { React }
 // Default export for convenience
 const SharedTypes = {
   MODERN_DESIGN,
-  ANALYZE_UI
+  ANALYZE_UI,
 }
 
 export default SharedTypes

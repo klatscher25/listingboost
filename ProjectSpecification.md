@@ -50,7 +50,7 @@ Infrastructure
 
 bashHosting: Vercel (serverless functions)
 CDN: Vercel Edge Network
-Storage: Cloudinary (images/PDFs)
+Storage: Cloudinary (images)
 Environment: .env.localChat-Steuerung Sonnet 4Smart, efficient model for everyday use 
 
 

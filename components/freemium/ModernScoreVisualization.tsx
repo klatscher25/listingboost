@@ -12,6 +12,12 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import type { FreemiumData } from '@/lib/types/freemium-types'
 import { ScoreAnalysisDetails } from './ScoreAnalysisDetails'
+import {
+  getScorePosition,
+  getDisplayScore,
+  generateFreemiumMetrics,
+  validateAndNormalizeScore,
+} from '@/lib/utils/scoring-utils'
 
 interface ModernScoreVisualizationProps {
   data: FreemiumData
@@ -23,49 +29,10 @@ export function ModernScoreVisualization({
   onUpgradeClick,
 }: ModernScoreVisualizationProps) {
   const { analysis } = data
-  const normalizedScore = Math.round(analysis.overallScore) // Use actual 1000-point score
-  const displayScore = Math.round(normalizedScore / 10) // Display as 0-100 for UI
-
-  // Calculate competitive positioning using 1000-point system (ScoringSystem.md compliant)
-  const getScorePosition = (score: number) => {
-    if (score >= 900)
-      return {
-        label: 'Elite Performer (Top 1%)',
-        color: 'text-emerald-600',
-        bgColor: 'bg-emerald-500',
-      }
-    if (score >= 800)
-      return {
-        label: 'High Performer (Top 5%)',
-        color: 'text-blue-600',
-        bgColor: 'bg-blue-500',
-      }
-    if (score >= 700)
-      return {
-        label: 'Good Performer (Top 20%)',
-        color: 'text-indigo-600',
-        bgColor: 'bg-indigo-500',
-      }
-    if (score >= 600)
-      return {
-        label: 'Average Performer',
-        color: 'text-yellow-600',
-        bgColor: 'bg-yellow-500',
-      }
-    if (score >= 500)
-      return {
-        label: 'Below Average',
-        color: 'text-orange-600',
-        bgColor: 'bg-orange-500',
-      }
-    return {
-      label: 'Poor Performer',
-      color: 'text-red-600',
-      bgColor: 'bg-red-500',
-    }
-  }
-
+  const normalizedScore = validateAndNormalizeScore(analysis.overallScore)
+  const displayScore = getDisplayScore(normalizedScore)
   const position = getScorePosition(normalizedScore)
+  const freemiumMetrics = generateFreemiumMetrics(normalizedScore)
 
   return (
     <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 md:p-8 shadow-xl border border-gray-200/30">
@@ -178,11 +145,15 @@ export function ModernScoreVisualization({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <div className="text-2xl font-bold text-orange-600">6</div>
+                <div className="text-2xl font-bold text-orange-600">
+                  {freemiumMetrics.criticalProblems}
+                </div>
                 <div className="text-sm text-slate-600">Kritische Probleme</div>
               </div>
               <div>
-                <div className="text-2xl font-bold text-red-600">47%</div>
+                <div className="text-2xl font-bold text-red-600">
+                  {freemiumMetrics.lostBookings}%
+                </div>
                 <div className="text-sm text-slate-600">
                   Verlorene Buchungen
                 </div>
@@ -196,12 +167,15 @@ export function ModernScoreVisualization({
               <div className="flex items-center justify-between">
                 <span className="text-sm">Nach Optimierung:</span>
                 <span className="font-bold text-emerald-600">
-                  +156% mehr Buchungen
+                  +{freemiumMetrics.potentialBookingIncrease}% mehr Buchungen
                 </span>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">Zusätzlicher Umsatz:</span>
-                <span className="font-bold text-emerald-600">+€3.247/Jahr</span>
+                <span className="font-bold text-emerald-600">
+                  +€{freemiumMetrics.additionalRevenue.toLocaleString('de-DE')}
+                  /Jahr
+                </span>
               </div>
             </div>
           </div>
