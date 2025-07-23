@@ -4,8 +4,37 @@ const fs = require('fs')
 const path = require('path')
 
 const MAX_LINES = 400
-const EXCLUDED_DIRS = ['node_modules', '.next', '.git', 'dist', 'out']
-const INCLUDED_EXTENSIONS = ['.ts', '.tsx', '.js', '.jsx']
+const EXCLUDED_DIRS = [
+  'node_modules',
+  '.next',
+  '.git',
+  'dist',
+  'out',
+  '.venv',
+  'venv',
+  '__pycache__', // Python virtual environments
+  'build',
+  'coverage',
+  '.nyc_output', // Build and test outputs
+  '.turbo',
+  '.swc',
+  '.cache', // Build caches
+  '__tests__',
+  'tests',
+  'test', // Test directories (separate validation)
+]
+
+// PROGRAM FILES ONLY - documentation files (.md, .txt, .rst) and config files (.json, .yaml) are EXEMPT
+const INCLUDED_EXTENSIONS = [
+  '.ts',
+  '.tsx',
+  '.js',
+  '.jsx', // TypeScript/JavaScript
+  '.py', // Python
+  '.go', // Go
+  '.css',
+  '.scss', // Stylesheets
+]
 
 function checkFileSize(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8')
@@ -48,15 +77,19 @@ function scanDirectory(dir) {
 }
 
 function main() {
-  console.log(`🔍 Checking file sizes (max ${MAX_LINES} lines)...\n`)
+  console.log(`🔍 Checking program file sizes (max ${MAX_LINES} lines)...`)
+  console.log(`📋 Checking extensions: ${INCLUDED_EXTENSIONS.join(', ')}`)
+  console.log(
+    `📁 Excluding documentation (.md, .txt, .rst) and config files (.json, .yaml)\n`
+  )
 
   const violations = scanDirectory(process.cwd())
 
   if (violations.length === 0) {
-    console.log('✅ All files are within the size limit!')
+    console.log('✅ All program files are within the size limit!')
     process.exit(0)
   } else {
-    console.log(`❌ Found ${violations.length} oversized file(s):\n`)
+    console.log(`❌ Found ${violations.length} oversized program file(s):\n`)
 
     violations.forEach(({ file, lines, excess }) => {
       console.log(
@@ -65,7 +98,10 @@ function main() {
     })
 
     console.log(
-      `\n💡 Consider refactoring these files to stay under ${MAX_LINES} lines.`
+      `\n💡 Consider refactoring these program files to stay under ${MAX_LINES} lines.`
+    )
+    console.log(
+      `ℹ️  Documentation files (.md, .txt) are exempt from this limit.`
     )
     process.exit(1)
   }

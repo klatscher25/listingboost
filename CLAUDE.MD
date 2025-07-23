@@ -116,16 +116,39 @@ Every task in `TODO.md` must follow this structure:
 ## 📏 CODING STANDARDS - ENFORCE STRICTLY
 
 ### File Size Rules
-- **400 lines maximum** per file
+- **400 lines maximum** per program file (applies only to source code files: .ts, .tsx, .js, .jsx, .py, .go, etc.)
+- **Documentation files (.md, .txt, .rst) are EXEMPT** from the 400-line limit
+- **Configuration files (.json, .yaml, .toml) are EXEMPT** from the 400-line limit
 - **100 lines maximum** per function
 - **5 parameters maximum** per function
 - **3 levels maximum** nesting depth
 
+### Program Files Subject to 400-Line Limit:
+```typescript
+// SOURCE CODE FILES ONLY:
+- TypeScript/JavaScript: .ts, .tsx, .js, .jsx
+- Python: .py
+- Go: .go
+- CSS/SCSS: .css, .scss
+- Component files in /components/
+- API routes in /app/api/
+- Library files in /lib/
+- Utility files in /utils/
+
+// EXEMPT FILES (NO LINE LIMIT):
+- Documentation: .md, .txt, .rst
+- Configuration: .json, .yaml, .yml, .toml
+- Package files: package.json, package-lock.json
+- Git files: .gitignore, .gitattributes
+- Environment files: .env.example
+- Database schema files: schema.sql
+```
+
 ### When limit exceeded:
 ```bash
-# AI must:
+# AI must (FOR PROGRAM FILES ONLY):
 1. Stop immediately
-2. Announce: "File exceeds 400 line limit"
+2. Announce: "Program file exceeds 400 line limit"
 3. Propose file split structure
 4. Wait for approval
 ```
@@ -202,7 +225,7 @@ chore(auto-sync): automated maintenance
 #### Validation Phases (All Auto-Checked):
 1. **🔒 Security**: API token exposure prevention
 2. **📋 TODO.md**: Synchronization and timestamp validation  
-3. **📏 File Size**: 400-line limit enforcement (CLAUDE.md compliance)
+3. **📏 File Size**: 400-line limit enforcement for program files only (.ts, .tsx, .js, .jsx, .py, .go, etc. - NOT .md/.json/.yaml)
 4. **🎯 Code Quality**: Debug statements, error handling, TypeScript strict mode
 5. **🇩🇪 Localization**: German UI text compliance 
 6. **📦 Dependencies**: package.json/lock synchronization

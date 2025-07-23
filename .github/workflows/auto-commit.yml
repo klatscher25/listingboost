@@ -53,6 +53,16 @@ jobs:
             node scripts/check-todo-sync.js || echo "⚠️ TODO validation warnings (auto-commit will proceed)"
           fi
           
+          # Run file size validation (program files only - NOT documentation)
+          if [ -f "scripts/check-file-sizes.js" ]; then
+            echo "📏 Checking program file sizes (400-line limit for .ts/.tsx/.js/.jsx/.py/.go/.css/.scss only)..."
+            node scripts/check-file-sizes.js || {
+              echo "❌ CRITICAL: Program files exceed 400-line limit!"
+              echo "🛑 Auto-commit blocked for CLAUDE.md compliance"
+              exit 1
+            }
+          fi
+          
           # Quick security scan
           if find . -name "*.js" -o -name "*.ts" -o -name "*.json" -o -name "*.md" | \
              xargs grep -l "apify_api_[A-Za-z0-9]\{20,\}" 2>/dev/null; then
