@@ -1,15 +1,16 @@
 /**
  * @file app/api/freemium/dashboard/[token]/route.ts
- * @description Freemium Dashboard API - lädt Daten aus DB (nicht Scraper)
+ * @description Freemium Dashboard API - lädt Daten aus DB mit echtem Scoring-System
  * @created 2025-07-21
- * @modified 2025-07-22
- * @todo Refactored for CLAUDE.md compliance - extracted utilities
+ * @modified 2025-07-23
+ * @todo FIXED: Removed random fallback scores, now uses real scoring system
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { logInfo, logApiError } from '@/lib/utils/logger'
 import { cleanupAmenities } from '@/lib/utils/freemium-amenity-cleanup'
 import { queryFreemiumData } from '@/lib/utils/freemium-db-queries'
+import { analyzeListingData } from '@/lib/services/freemium/analysis'
 
 interface FreemiumDashboardData {
   listing: any
@@ -110,19 +111,48 @@ export async function GET(
       'Fügen Sie professionelle Fotos hinzu - besonders vom Außenbereich',
     ]
 
+    // ✅ FIXED: Use real scoring system instead of random fallback
+    let finalAnalysis = analysisData
+
+    if (!analysisData) {
+      console.log(
+        '[Dashboard] Analysis data missing - calculating with real scoring system'
+      )
+      try {
+        // Reconstruct original listing data from database for scoring
+        const originalListingData = rawData || listing
+
+        // Use REAL scoring system instead of random fallback
+        finalAnalysis = await analyzeListingData(originalListingData)
+
+        console.log(
+          '[Dashboard] ✅ Real scoring calculation successful:',
+          finalAnalysis.overallScore
+        )
+      } catch (error) {
+        console.error(
+          '[Dashboard] Real scoring failed, using minimal fallback:',
+          error
+        )
+
+        // Only use minimal fallback if real scoring completely fails
+        finalAnalysis = {
+          overallScore: 0,
+          categoryScores: {
+            title: 0,
+            description: 0,
+            photos: 0,
+            pricing: 0,
+            amenities: 0,
+            location: 0,
+          },
+        }
+      }
+    }
+
     const responseData: FreemiumDashboardData = {
       listing,
-      analysis: analysisData || {
-        overallScore: Math.floor(75 + Math.random() * 20),
-        categoryScores: {
-          title: Math.floor(60 + Math.random() * 35),
-          description: Math.floor(55 + Math.random() * 30),
-          photos: Math.floor(70 + Math.random() * 25),
-          pricing: Math.floor(50 + Math.random() * 40),
-          amenities: Math.floor(65 + Math.random() * 30),
-          location: Math.floor(80 + Math.random() * 20),
-        },
-      },
+      analysis: finalAnalysis,
       recommendations,
       isRealData,
       dbId: listings.id,

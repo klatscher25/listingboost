@@ -560,6 +560,9 @@ const rateLimiter = { apify: 10, gemini: 60, stripe: 100 } // per minute
 - Background processing: API calls during fake analysis step 3
 - Fallback chain: DB → localStorage cache → fresh API call
 
+**Last Updated Build Logs**: 
+- **Critical Deployment Log Added**: Log from Vercel build on a recent build, which showed environment validation and build errors
+
 ---
 
 **Last Updated**: 2025-07-22 | **Current Sprint**: Enhanced Freemium System with Real Data Integration & Performance Fixes

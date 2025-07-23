@@ -20,12 +20,10 @@ import {
   AIInsightsResponse,
 } from '@/lib/types/freemium-types'
 
-// Import AI insight components
-import ListingOptimizationSection from '@/components/freemium/ai-insights/ListingOptimizationSection'
-import HostCredibilitySection from '@/components/freemium/ai-insights/HostCredibilitySection'
-import SeasonalOptimizationSection from '@/components/freemium/ai-insights/SeasonalOptimizationSection'
-import RatingImprovementSection from '@/components/freemium/ai-insights/RatingImprovementSection'
-import AmenityGapAnalysisSection from '@/components/freemium/ai-insights/AmenityGapAnalysisSection'
+// Import freemium dashboard content
+import { FreemiumDashboardContent } from '@/components/freemium/FreemiumDashboardContent'
+import { ModernDashboardHero } from '@/components/freemium/ModernDashboardHero'
+import { StickyUpgradeBar } from '@/components/freemium/StickyUpgradeBar'
 
 export default function ModernFreemiumDashboard() {
   const [data, setData] = useState<FreemiumData | null>(null)
@@ -162,17 +160,17 @@ export default function ModernFreemiumDashboard() {
   const { listing, analysis, recommendations, isRealData } = data
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100/50">
       {/* Navigation */}
-      <nav className="bg-white/90 backdrop-blur-xl border-b border-slate-200 shadow-sm sticky top-0 z-40">
+      <nav className="bg-white/95 backdrop-blur-xl border-b border-gray-200/50 shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">LB</span>
               </div>
               <span className="font-bold text-xl bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent">
-                ListingBoost Pro
+                ListingBoost Analyse
               </span>
             </div>
             <div className="flex items-center space-x-4">
@@ -204,142 +202,20 @@ export default function ModernFreemiumDashboard() {
         </div>
       </nav>
 
+      {/* Modern Hero Section */}
+      <ModernDashboardHero data={data} onUpgradeClick={handleUpgrade} />
+
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Hero Section with Listing Info */}
-        <div className="mb-8">
-          <div className="bg-white/70 backdrop-blur-xl rounded-2xl p-6 shadow-lg border border-white/20">
-            <div className="flex flex-col lg:flex-row gap-6">
-              {/* Listing Image */}
-              {listing.images && listing.images.length > 0 && (
-                <div className="lg:w-1/3">
-                  <div className="relative h-64 lg:h-48 rounded-xl overflow-hidden">
-                    <Image
-                      src={listing.images[0].url}
-                      alt={listing.title}
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Listing Details */}
-              <div className="flex-1">
-                <h1 className="text-2xl font-bold text-slate-800 mb-2 leading-tight">
-                  {listing.title}
-                </h1>
-                <div className="flex items-center space-x-4 text-sm text-slate-600 mb-4">
-                  <span>{listing.propertyType}</span>
-                  <span>•</span>
-                  <span>{listing.personCapacity} Gäste</span>
-                  {listing.bedrooms && (
-                    <>
-                      <span>•</span>
-                      <span>{listing.bedrooms} Schlafzimmer</span>
-                    </>
-                  )}
-                </div>
-
-                {/* Price and Rating */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-4">
-                    <div className="text-2xl font-bold text-slate-800">
-                      {listing.price.amount} {listing.price.qualifier}
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <span className="text-yellow-500">⭐</span>
-                      <span className="font-medium text-slate-700">
-                        {listing.rating.guestSatisfaction.toFixed(1)}
-                      </span>
-                      <span className="text-slate-500 text-sm">
-                        ({listing.rating.reviewsCount} Bewertungen)
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-bold text-blue-600">
-                      {analysis.overallScore}/100
-                    </div>
-                    <div className="text-sm text-slate-500">Gesamt-Score</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* AI Insights Button */}
-        <div className="mb-8">
-          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-2xl p-6 border border-purple-200/50">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-xl font-bold text-slate-800 mb-2">
-                  🤖 KI-gestützte Optimierung
-                </h2>
-                <p className="text-slate-600">
-                  Entdecken Sie 5 neue Bereiche mit personalisierten
-                  Verbesserungsvorschlägen
-                </p>
-              </div>
-              <button
-                onClick={fetchAIInsights}
-                disabled={isLoadingAI}
-                className="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 disabled:opacity-50"
-              >
-                {isLoadingAI
-                  ? 'KI analysiert...'
-                  : aiInsights
-                    ? 'Bereits analysiert'
-                    : 'KI-Analyse starten'}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* AI Insights Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <ListingOptimizationSection
-            insights={aiInsights}
-            listing={listing}
-            isLoadingAI={isLoadingAI}
-          />
-
-          <HostCredibilitySection
-            insights={aiInsights}
-            listing={listing}
-            isLoadingAI={isLoadingAI}
-          />
-
-          <SeasonalOptimizationSection
-            insights={aiInsights}
-            isLoadingAI={isLoadingAI}
-          />
-
-          <RatingImprovementSection
-            insights={aiInsights}
-            listing={listing}
-            isLoadingAI={isLoadingAI}
-          />
-        </div>
-
-        {/* Full-width Amenity Analysis */}
-        <div className="mb-8">
-          <AmenityGapAnalysisSection
-            insights={aiInsights}
-            listing={listing}
-            isLoadingAI={isLoadingAI}
-          />
-        </div>
-
-        {/* Potential Analysis Widget */}
-        <div className="mb-8">
-          <PotentialAnalysisWidget
-            listingTitle={listing?.title || 'Ihr Listing'}
-            onUpgradeClick={() => setShowUpgrade(true)}
-          />
-        </div>
+        {/* Dashboard Content */}
+        <FreemiumDashboardContent
+          data={data}
+          aiInsights={aiInsights}
+          isLoadingAI={isLoadingAI}
+          token={params.token as string}
+          onFetchAIInsights={fetchAIInsights}
+          onUpgradeClick={() => setShowUpgrade(true)}
+        />
       </div>
 
       {/* Upgrade Modal */}
@@ -402,6 +278,9 @@ export default function ModernFreemiumDashboard() {
           </div>
         </div>
       )}
+
+      {/* Sticky Upgrade Bar */}
+      <StickyUpgradeBar onUpgradeClick={handleUpgrade} />
 
       {/* Glassmorphism Styles */}
       <style jsx global>{`

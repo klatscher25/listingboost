@@ -185,8 +185,8 @@ export async function POST(request: NextRequest) {
       isRealData = false
     }
 
-    // Analyze the listing data
-    const analysis = analyzeListingData(listing)
+    // Analyze the listing data using REAL 1000-point scoring system
+    const analysis = await analyzeListingData(listing)
     const recommendations = generateRecommendations(listing, analysis)
 
     const responseData: FreemiumAnalysisData = {

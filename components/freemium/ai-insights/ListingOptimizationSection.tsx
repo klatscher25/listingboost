@@ -47,13 +47,13 @@ export default function ListingOptimizationSection({
           <h3 className="text-xl font-bold text-slate-800">
             🎯 Listing-Optimierung
           </h3>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-            KI-Analyse starten
-          </button>
+          <div className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+            Wartet auf KI-Analyse
+          </div>
         </div>
         <p className="text-slate-600">
-          Starten Sie eine KI-Analyse für personalisierte
-          Optimierungsvorschläge.
+          Starten Sie die KI-Komplettanalyse oben, um personalisierte
+          Optimierungsvorschläge zu erhalten.
         </p>
       </div>
     )
@@ -71,13 +71,14 @@ export default function ListingOptimizationSection({
         <div className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-blue-600">
             {Math.round(
-              (optimization.titleScore +
+              ((optimization.titleScore +
                 optimization.descriptionScore +
                 optimization.photoScore +
-                optimization.amenityScore) /
+                optimization.amenityScore) *
+                10) /
                 4
             )}
-            /100
+            /1000
           </span>
           <div className="text-sm text-slate-500">Gesamt-Score</div>
         </div>
@@ -89,7 +90,7 @@ export default function ListingOptimizationSection({
           <h4 className="font-semibold text-slate-700">📝 Titel-Optimierung</h4>
           <div className="flex items-center space-x-2">
             <span className="text-lg font-bold text-orange-600">
-              {optimization.titleScore}/100
+              {Math.round(optimization.titleScore * 10)}/1000
             </span>
             <button
               onClick={() => setShowTitleSimulator(!showTitleSimulator)}
@@ -170,7 +171,7 @@ export default function ListingOptimizationSection({
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-semibold text-slate-700">📄 Beschreibung</h4>
           <span className="text-lg font-bold text-green-600">
-            {optimization.descriptionScore}/100
+            {Math.round(optimization.descriptionScore * 10)}/1000
           </span>
         </div>
         {optimization.descriptionImprovements.length > 0 && (
@@ -194,7 +195,7 @@ export default function ListingOptimizationSection({
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-semibold text-slate-700">📸 Foto-Qualität</h4>
           <span className="text-lg font-bold text-purple-600">
-            {optimization.photoScore}/100
+            {Math.round(optimization.photoScore * 10)}/1000
           </span>
         </div>
         {optimization.photoRecommendations.length > 0 && (
@@ -218,7 +219,7 @@ export default function ListingOptimizationSection({
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-semibold text-slate-700">🏠 Ausstattung</h4>
           <span className="text-lg font-bold text-indigo-600">
-            {optimization.amenityScore}/100
+            {Math.round(optimization.amenityScore * 10)}/1000
           </span>
         </div>
         {optimization.missingAmenities.length > 0 && (

@@ -6,14 +6,14 @@
  */
 
 import { NextResponse } from 'next/server'
-import { enhancedAnalysisService } from '@/lib/services/enhanced-analysis'
+import { AnalyzerHealth } from '@/lib/services/enhanced-analysis'
 import { logInfo, logApiError } from '@/lib/utils/logger'
 
 export async function GET() {
   try {
     logInfo('[HealthAPI] Service-Status wird überprüft')
 
-    const serviceStatus = await enhancedAnalysisService.checkServiceHealth()
+    const serviceStatus = await AnalyzerHealth.checkServiceHealth()
 
     return NextResponse.json({
       success: true,

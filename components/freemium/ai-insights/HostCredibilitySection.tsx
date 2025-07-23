@@ -89,7 +89,7 @@ export default function HostCredibilitySection({
         </h3>
         <div className="flex items-center space-x-2">
           <span className="text-2xl font-bold text-green-600">
-            {hostCredibility.currentScore}/100
+            {Math.round(hostCredibility.currentScore * 10)}/1000
           </span>
           <div className="text-sm text-slate-500">Vertrauens-Score</div>
         </div>
@@ -211,7 +211,7 @@ export default function HostCredibilitySection({
             Glaubwürdigkeit
           </span>
           <span className="text-sm text-slate-600">
-            {hostCredibility.currentScore}%
+            {Math.round(hostCredibility.currentScore * 10)}/1000
           </span>
         </div>
         <div className="w-full bg-slate-200 rounded-full h-2">
